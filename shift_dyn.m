@@ -26,6 +26,7 @@ for ii = 1:length(trans)
             accel(4,i),a(i),I(1),I(2),alpha(1,i),alpha(2,i)});
         invdyn(:,i,ii)=Aeq\beq;
         [lpsol,fval,exitflag,output,lambda] = linprog(f,Auneq,buneq,double(Aeq),double(beq));
+        exitflag
         lp(:,i,ii) = {lpsol};
     end
     argf{1,ii} = ['F_{14x}' num2str(ii)];

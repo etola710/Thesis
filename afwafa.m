@@ -128,40 +128,39 @@ subplot(4,1,1)
 plot(time,sth)
 xlabel('Time (s)')
 ylabel('Radians {rad}')
-title('S_{\theta}')
+title('\theta')
 grid on
 subplot(4,1,2);
 plot(time,vth)
 xlabel('Time (s)')
-ylabel('Angular Velocity (^{m}/_{s})')
-title('W_{\theta}')
+ylabel('Angular Velocity (^{rad}/_{s})')
+title('\omega')
 grid on
 subplot(4,1,3)
 plot(time,ath)
 xlabel('Time (s)')
-ylabel('Angular Acceleration (m/s^2)')
-title('A_{\theta}')
+ylabel('Angular Acceleration (rad/s^2)')
+title('\alpha')
 grid on
 subplot(4,1,4)
 plot(time,jth)
 xlabel('Time (s)')
-ylabel('Jerk (m/s^3)')
+ylabel('Jerk (rad/s^3)')
 title('J_{\theta}')
 grid on
 %}
 
-h=figure;
-ax=axes(h,'XLim',[-3,3],'YLim',[-3,3]);
+fig=figure;
+ax=axes(fig,'XLim',[-3,3],'YLim',[-3,3]);
 obj=line(ax);
-%obj.Parent=ax;
+center=line(ax);
+center.Marker='o';
 obj.LineWidth=2;
 obj.Color='green';
 dirx=line(ax);
-%dirx.Parent=ax;
 dirx.LineWidth=2;
 dirx.Color='red';
 diry=line(ax);
-%diry.Parent(ax);
 diry.LineWidth=2;
 diry.Color='blue';
 R=@(th) [cos(th),-sin(th);sin(th),cos(th)];
@@ -170,14 +169,17 @@ for i=1:length(sx)
     [xcorner,ycorner]=corners([sx(i),sy(i)],[l,h]);
     xbox(1:4,i) = xcorner';
     ybox(1:4,i) = ycorner';
-    line(ax,pos(1),pos(2),'Marker','o');
-    x1 = [xbox(1,i); ybox(1,i)]+R(sth(i))'*pos;
-    x2=[xbox(2,i); ybox(2,i)]+R(sth(i))'*pos;
-    x3=[xbox(3,i); ybox(3,i)]+R(sth(i))'*pos;
-    x4=[xbox(4,i); ybox(4,i)]+R(sth(i))'*pos;
-    %x2 = pos+R(sth(i))*[xbox(2,i); ybox(2,i)];
-    %x3 = pos+R(sth(i))*[xbox(3,i); ybox(3,i)];
-    %x4 = pos+R(sth(i))*[xbox(4,i); ybox(4,i)];
+    %line(ax,pos(1),pos(2),'Marker','o');
+    center.XData=pos(1);
+    center.YData=pos(2);
+    %x1 = [xbox(1,i); ybox(1,i)]+R(sth(i))*pos;
+    %x2=[xbox(2,i); ybox(2,i)]+R(sth(i))*pos;
+    %x3=[xbox(3,i); ybox(3,i)]+R(sth(i))*pos;
+    %x4=[xbox(4,i); ybox(4,i)]+R(sth(i))*pos;
+    x1 = pos+R(sth(i))*([xbox(1,i); ybox(1,i)]-pos);
+    x2 = pos+R(sth(i))*([xbox(2,i); ybox(2,i)]-pos);
+    x3 = pos+R(sth(i))*([xbox(3,i); ybox(3,i)]-pos);
+    x4 = pos+R(sth(i))*([xbox(4,i); ybox(4,i)]-pos);
     obj.XData=[x1(1),x2(1),x3(1),x4(1),x1(1)];
     obj.YData=[x1(2),x2(2),x3(2),x4(2),x1(2)];
   % obj.XData=[xbox(1,i)+cos(sth(i)),xbox(2,i)-cos(sth(i)),xbox(3,i)-cos(sth(i)),...
