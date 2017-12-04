@@ -36,9 +36,9 @@ for i=1:length(s)
     %x = R theta
     if i >= 2
         if pos(2) > pos(1)
-            x_pos(i) = x_pos(i-1) - dim*s(i); %rolling towards finger
+            x_pos(i) = x_pos(1) - dim*s(i); %rolling towards finger
         else
-            x_pos(i) = x_pos(i-1) + dim*s(i); %rolling away from finger
+            x_pos(i) = x_pos(1) + dim*s(i); %rolling away from finger
         end
     else
     end
