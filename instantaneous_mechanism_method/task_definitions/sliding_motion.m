@@ -17,10 +17,12 @@ th2=zeros(1,length(s));
 dirs=zeros(4,length(s));
 r1_mag = mp.links(1)/2;
 r2_mag = mp.links(2)/2;
+
 r_14=zeros(2,length(s));
 r_12=zeros(2,length(s));
 r_21=zeros(2,length(s));
 r_23=zeros(2,length(s));
+
 %replace with generic object function
 xbox = zeros(4,length(s));
 ybox = zeros(4,length(s));

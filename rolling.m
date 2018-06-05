@@ -4,27 +4,33 @@ close all
 %Object is Circular
 %Assumed no slip condition
 addpath(genpath('instantaneous_mechanism_method'))
+mp = struct();
 %finger dimensions
-links = [.08 .05]; %m
-mass = [.5 .3 .3]; %kg
-%object dimensions
-dim = .015; %m radius
-I = [(mass(1)*links(1)^2)/12 (mass(2)*links(2)^2)/12 (mass(3)*dim^2)/2]; %moment of inertias kg m^2
-dt = .01;
-mu = [.3 .9]; %friction coefficents [object/floor , finger/object]
-time = [.5 .5 .5]; %s time for motion
-pos = [0 pi/4 pi/64]; %m theta coordinate [inital final x initial position]
+mp.links = [.08 .05]; %m
+mp.mass = [.5 .3 .05]; %kg
+mp.I_rod = @(m,l) (m*l^2)/12;
+mp.I_disk= @(m,r) ((0.5)*m*r^2);
+mp.dim=.03; %circle radius
+mp.I = [mp.I_rod(mp.mass(1),mp.links(1)) mp.I_rod(mp.mass(2),mp.links(2)) mp.I_disk(mp.mass(3),mp.dim)]; %moment of inertias kg m^2
+mp.dt = .01;
+mp.mu = [.1 .9]; %friction coefficents [object/floor , finger/object]
+%gravity parameters
+mp.g_acc = 9.80665;
+mp.g_dir = 3*pi/2;
+mp.g_force = [mp.g_acc*cos(mp.g_dir) mp.g_acc*sin(mp.g_dir)]; %Fg_x Fg_y
+%motion prmitive
+mp.time = [.5]; %s time for motion
+mp.pos = [.05 .1]; %m x positions
+mp.p_con=[.05,.03]; %m contact point
 %generate rolling motion plan
-[p_j,accel,obj_lin_acc,cen_pw,R,alpha,svaj_curves,tp]=rolling_motion(links,pos,dim,time,dt);
-svaj_plot(tp,svaj_curves);
+mp=rolling_motion(mp);
+svaj_plot(mp);
 %lp dynamics
-x=cell(1,length(svaj_curves));
-fval=1:length(svaj_curves);
-for i=1:length(svaj_curves)
-[lp,fval,exitflag] = lp_dynamics_rolling(mass,accel(:,i),alpha,R(:,i),mu,obj_lin_acc(1,i),svaj_curves(3,i),I);
-x{i} = lp;
-exitflag
-end
-torque_plot(tp,x);
-filename ='rolling.gif';
-rolling_plot(p_j(1:2,:),p_j(3:4,:),cen_pw,dim,length(svaj_curves),filename);
+mp.x=cell(1,length(mp.svaj_curve));
+mp.fval=1:length(mp.svaj_curve);
+mp = lp_dynamics_rolling(mp);
+mp.lp = cell2mat(mp.x);
+mp = torque_plot2(mp);
+mp.filename = 'rolling.gif';
+mp.gif_fps = 10;
+rolling_plot(mp);

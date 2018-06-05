@@ -13,8 +13,8 @@ T2 = lp_sol(9,:);
 mp.c=1:length(lp_sol);
 mp.FC=zeros(1,length(lp_sol(5,:)));
 for i=1:length(lp_sol)
-    F_34x(i) = mp.mu(1)*(-sign(mp.svaj_curve(2,i)))*F_34y(i);
-    mp.c(i)=(T2(i)/T1(i)); %c = T2/T1 
+    F_34x(i) = mp.mu(1)*(-sign(mp.svaj_curve(2,i)))*abs(F_34y(i));
+    mp.c(i)=(abs(T2(i))/abs(T1(i))); %c = T2/T1 
     if (round(abs(F_23x(i)),8) <= round(abs(mp.mu(2)*F_23y(i)),8)) == 1 %friction cone constraints fx leq mu fy
         mp.FC(i) = 1;
     else
@@ -25,6 +25,7 @@ end
 figure
 subplot(2,1,1)
 plot(mp.tp,T1,mp.tp,T2)
+%plot(mp.tp,T1)
 xlabel('Time s')
 ylabel('Torque N m')
 legend('T_1','T_2')
