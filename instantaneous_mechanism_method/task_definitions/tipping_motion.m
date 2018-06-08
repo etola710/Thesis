@@ -1,4 +1,4 @@
-function mp = rolling_motion(mp)
+function mp = tipping_motion(mp)
 mp = motion_generation(mp);
 s=mp.svaj_curve(1,:);
 v=mp.svaj_curve(2,:);
@@ -18,7 +18,7 @@ th2=zeros(1,length(s));
 dirs=zeros(6,length(s));
 r1_mag = mp.links(1)/2;
 r2_mag = mp.links(2)/2;
-r3_mag = mp.dim; %radius
+r3_mag = sqrt((mp.p_con(1)^2+(mp.dim(1)/2)^2));
 
 r_14=zeros(2,length(s));
 r_12=zeros(2,length(s));

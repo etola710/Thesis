@@ -1,5 +1,5 @@
-function mp = torque_plot2(mp)
-%x = [F14x F14y F12x F12y F23y F34y T1 T2] 1x8
+function mp = torque_plot_s(mp)
+%x = [F14x F14y F12x F12y F23y F34y T1 T2] 1x9
 lp_sol = cell2mat(mp.x);
 F_14x = lp_sol(1,:);
 F_14y = lp_sol(2,:);

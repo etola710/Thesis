@@ -11,7 +11,8 @@ Aeq = [
     0 0 0 -1 0 1 0 0 0;
     0 0 mp.R(6,i) -mp.R(5,i) -mp.R(8,i) mp.R(7,i) 0 0 1;
     0 0 0 0 -1 0 (-(sign(mp.svaj_curve(2,i))*mp.mu(1))) 0 0;
-    0 0 0 0 0 -1 1 0 0
+    0 0 0 0 0 -1 1 0 0;
+    %0 0 0 0 mp.R(10,i) -mp.R(9,i) 0 0 0
     ];
 beq = [
     mp.mass(1)*mp.a_links(1,i) - mp.mass(1)*mp.g_force(1)
@@ -22,6 +23,7 @@ beq = [
     mp.I(2)*mp.alpha(2,i)
     mp.mass(3)*mp.svaj_curve(3,i) - mp.mass(3)*mp.g_force(1)
     -mp.mass(3)*mp.g_force(2)
+    %0
     ];
 Auneq = [
         0 0 0 0 -1 -mp.mu(2) 0 0 0

@@ -1,5 +1,6 @@
 function mp = dynamics_sliding(mp)
-%direct solution sliding
+%direct dynamics solution sliding
+%x = [F14x F14y F12x F12y F23x F23y F34y T1]
 for i=1:length(mp.svaj_curve)
 A = [
     1 0 1 0 0 0 0 0 ;

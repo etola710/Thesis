@@ -3,129 +3,70 @@ h=figure;
 ax=axes(h,'XLim',[-.1,.2],'YLim',[-.1,.2]);
 finger=line(ax);
 finger.Parent=ax;
-obj=line(ax);
-obj.Parent=ax;
 finger.LineWidth=2;
 finger.Color='b';
+finger.Marker='o';
+obj=line(ax);
+obj.Parent=ax;
 obj.LineWidth=2;
 obj.Color='g';
 hold on
+
 f1 = quiver(ax,0,0,0,0);
-f1.LineWidth=2;
-f1.Color='r';
-f1.Marker='.';
-f1.MarkerFaceColor='r';
-f1.AlignVertexCenters='on';
-f1.AutoScale='off';
 f2 = quiver(ax,0,0,0,0);
-f2.LineWidth=2;
-f2.Color='r';
-f2.Marker='.';
-f2.MarkerFaceColor='r';
-f2.AlignVertexCenters='on';
-f2.AutoScale='off';
 f3 = quiver(ax,0,0,0,0);
-f3.LineWidth=2;
-f3.Color='r';
-f3.Marker='.';
-f3.MarkerFaceColor='r';
-f3.AlignVertexCenters='on';
-f3.AutoScale='off';
 f4 = quiver(ax,0,0,0,0);
-f4.LineWidth=2;
-f4.Color='b';
-f4.Marker='.';
-f4.MarkerFaceColor='b';
-f4.AlignVertexCenters='on';
-f4.AutoScale='off';
 f5 = quiver(ax,0,0,0,0);
-f5.LineWidth=2;
-f5.Color='c';
-f5.Marker='.';
-%f5.LineStyle = '--';
-f5.MarkerFaceColor='c';
-f5.AlignVertexCenters='on';
-f5.AutoScale='off';
 f6 = quiver(ax,0,0,0,0);
-f6.LineWidth=2;
-f6.Color='m';
-f6.Marker='.';
-%f6.LineStyle = '--';
-f6.MarkerFaceColor='m';
-f6.AlignVertexCenters='on';
-f6.AutoScale='off';
 f7 = quiver(ax,0,0,0,0);
-f7.LineWidth=2;
-f7.Color='c';
-f7.Marker='.';
-%f7.LineStyle = '--';
-f7.MarkerFaceColor='c';
-f7.AlignVertexCenters='on';
-f7.AutoScale='off';
 f8 = quiver(ax,0,0,0,0);
-f8.LineWidth=2;
-f8.Color='m';
-f8.Marker='.';
-%f8.LineStyle = '--';
-f8.MarkerFaceColor='m';
-f8.AlignVertexCenters='on';
-f8.AutoScale='off';
 f9 = quiver(ax,0,0,0,0);
-f9.LineWidth=2;
-f9.Color='c';
-f9.Marker='.';
-%f9.LineStyle = '--';
-f9.MarkerFaceColor='c';
-f9.AlignVertexCenters='on';
-f9.AutoScale='off';
 f10 = quiver(ax,0,0,0,0);
-f10.LineWidth=2;
-f10.Color='m';
-f10.Marker='.';
-%f10.LineStyle = '--';
-f10.MarkerFaceColor='m';
-f10.AlignVertexCenters='on';
-f10.AutoScale='off';
-f11 = quiver(ax,0,0,0,0);
-f11.LineWidth=2;
-f11.Color='g';
-f11.Marker='.';
-f11.LineStyle = '--';
-f11.MarkerFaceColor='g';
-f11.AlignVertexCenters='on';
-f11.AutoScale='off';
+f11= quiver(ax,0,0,0,0);
 f12 = quiver(ax,0,0,0,0);
-f12.LineWidth=2;
-f12.Color='y';
-f12.Marker='.';
-f12.LineStyle = '--';
-f12.MarkerFaceColor='y';
-f12.AlignVertexCenters='on';
-f12.AutoScale='off';
-f13 = quiver(ax,0,0,0,0);
-f13.LineWidth=2;
-f13.Color='g';
-f13.Marker='.';
-f13.LineStyle = '--';
-f13.MarkerFaceColor='g';
-f13.AlignVertexCenters='on';
-f13.AutoScale='off';
+f13= quiver(ax,0,0,0,0);
 f14 = quiver(ax,0,0,0,0);
-f14.LineWidth=2;
-f14.Color='y';
-f14.Marker='.';
-f14.LineStyle = '--';
-f14.MarkerFaceColor='y';
-f14.AlignVertexCenters='on';
-f14.AutoScale='off';
 f15 = quiver(ax,0,0,0,0);
-f15.LineWidth=2;
-f15.Color='r';
-f15.Marker='.';
-%f15.LineStyle = '--';
-f15.MarkerFaceColor='r';
-f15.AlignVertexCenters='on';
-f15.AutoScale='off';
+f16 = quiver(ax,0,0,0,0);
+f17 = quiver(ax,0,0,0,0);
+vectors = [f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12 f13 f14 f15 f16 f17];
+for i =1:length(vectors)
+    vectors(i).LineWidth = 2;
+    vectors(i).AlignVertexCenters='on';
+    vectors(i).Marker = '.';
+    vectors(i).AutoScale='off';
+    vectors(i).MaxHeadSize = .01;
+end
+forces = [f1 f2 f3 f15];
+for i = 1:length(forces)
+    forces(i).Color='r';
+    forces(i).MarkerFaceColor='r';
+end
+
+f4.Color='b';
+f4.MarkerFaceColor='b';
+
+vels = [f5 f7 f9];
+accels = [f6 f8 f10];
+for i=1:length(vels)
+    vels(i).Color='c';
+    vels(i).MarkerFaceColor='c';
+    accels(i).Color='m';
+    accels(i).MarkerFaceColor='m';
+end
+
+%{\
+%radii
+radii_g = [f11 f13 f16];
+radii_y = [f12 f14 f17];
+for i = 1:length(radii_g)
+    radii_g(i).Color='g';
+    radii_g(i).LineStyle = '--';
+    radii_g(i).MarkerFaceColor='g';
+    radii_y(i).Color='y';
+    radii_y(i).LineStyle = '--';
+    radii_y(i).MarkerFaceColor='y';
+end
 lp_sol = cell2mat(mp.x);
 x_j = mp.p_j(1:2,:);
 y_j = mp.p_j(3:4,:);
@@ -138,9 +79,13 @@ a_y = mp.a_links(3:4,:);
 po_cg = mp.po_cg;
 vo_x = mp.svaj_curve(2,:);
 ao_x = mp.svaj_curve(3,:);
-scaling = .05;
+
+str = '';
+an=annotation(h,'textbox',[.6 .75 .1 .1],'String',str,'FitBoxToText','on');
+
+scaling = .1;
 s_fun = @(a,b) a/max(abs(b));
-F_34y = lp_sol(6,:) + mp.mass(3)*mp.g_force(2);
+%F_34y = lp_sol(6,:) + mp.mass(3)*mp.g_force(2);
 for i=1:length(mp.x)
     xgph = [0, x_j(:,i)'];
     ygph = [0, y_j(:,i)'];
@@ -159,16 +104,16 @@ for i=1:length(mp.x)
     f2.VData = scaling*lp_sol(4,i); %F_12y
     f3.XData = x_j(2,i);
     f3.YData = y_j(2,i);
-    f3.UData = lp_sol(5,i); %F_23x
-    f3.VData = lp_sol(6,i); %F_23y
+    f3.UData = scaling*lp_sol(5,i); %F_23x
+    f3.VData = scaling*lp_sol(6,i); %F_23y
     f4.XData = x_j(2,i);
     f4.YData = y_j(2,i);
-    f4.UData = -lp_sol(5,i); %F_32x = -F_23x
-    f4.VData = -lp_sol(6,i); %F_32y = -F_23y
+    f4.UData = -scaling*lp_sol(5,i); %F_32x = -F_23x
+    f4.VData = -scaling*lp_sol(6,i); %F_32y = -F_23y
     f15.XData = po_cg(1,i);
     f15.YData = 0;
-    f15.UData = signum(vo_x(i))*mp.mu(1)*F_34y(i); %F_34x = - sign(v) mu F_34y
-    f15.VData = F_34y(i);  %F_34y = F_23y + F_g
+    f15.UData = scaling*(-sign(vo_x(i))*mp.mu(1)*abs(lp_sol(7,i))); %F_34x = - sign(v) mu F_34y
+    f15.VData = scaling*lp_sol(7,i);  %F_34y = F_23y + F_g
     
     f5.XData = x_cg(1,i);
     f5.YData = y_cg(1,i);
@@ -211,6 +156,17 @@ for i=1:length(mp.x)
     f14.YData = y_cg(2,i);
     f14.UData = mp.R(7,i); %r_23x
     f14.VData = mp.R(8,i);  %r_23y
+    f16.XData = po_cg(1,i);
+    f16.YData = po_cg(2,i);
+    f16.UData = mp.R(9,i); %r_32x
+    f16.VData = mp.R(10,i);  %r_32y
+    f17.XData = po_cg(1,i);
+    f17.YData = po_cg(2,i);
+    f17.UData = mp.R(11,i); %r_34x
+    f17.VData = mp.R(12,i);  %r_34y
+    
+    str = sprintf('t = %f seconds',mp.tp(i));
+    an.String = str;
     
     drawnow
     pause(.1)
