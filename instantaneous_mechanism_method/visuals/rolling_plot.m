@@ -112,8 +112,8 @@ for i=1:length(mp.svaj_curve)
     f4.VData = -scaling*lp_sol(6,i); %F_32y = -F_23y
     f15.XData = po_cg(1,i);
     f15.YData = 0;
-    f15.UData = scaling*(-sign(vo_x(i))*mp.mu(1)*abs(lp_sol(7,i))); %F_34x = - sign(v) mu F_34y
-    f15.VData = scaling*lp_sol(7,i);  %F_34y = F_23y + F_g
+    f15.UData = scaling*sign(vo_x(i))*lp_sol(7,i); %F_34x = - sign(v) mu F_34y
+    f15.VData = scaling*lp_sol(8,i);  %F_34y = F_23y + F_g
     
     f5.XData = x_cg(1,i);
     f5.YData = y_cg(1,i);

@@ -7,13 +7,13 @@ F_12x = lp_sol(3,:);
 F_12y = lp_sol(4,:);
 F_23x = lp_sol(5,:);
 F_23y = lp_sol(6,:);
-F_34y = lp_sol(7,:);
-T1 = lp_sol(8,:);
-T2 = lp_sol(9,:);
+F_34x = lp_sol(7,:);
+F_34y = lp_sol(8,:);
+T1 = lp_sol(9,:);
+T2 = lp_sol(10,:);
 mp.c=1:length(lp_sol);
 mp.FC=zeros(1,length(lp_sol(5,:)));
 for i=1:length(lp_sol)
-    F_34x(i) = mp.mu(1)*(-sign(mp.svaj_curve(2,i)))*abs(F_34y(i));
     mp.c(i)=(abs(T2(i))/abs(T1(i))); %c = T2/T1 
     if (round(abs(F_23x(i)),8) <= round(abs(mp.mu(2)*F_23y(i)),8)) == 1 %friction cone constraints fx leq mu fy
         mp.FC(i) = 1;

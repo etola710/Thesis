@@ -35,5 +35,5 @@ mp = torque_plot_r(mp); %linear program
 %mp = torque_plot_rd(mp); %direct solution
 mp.filename = 'rolling.gif';
 mp.gif_fps = 10;
-%rolling_plot(mp); %linear program
-rolling_plot_d(mp); %direct solution
+rolling_plot(mp); %linear program
+%rolling_plot_d(mp); %direct solution

@@ -6,7 +6,8 @@ for i=1:length(mp.svaj_curve)
 Aeq = [
     1 0 1 0 0 0 0 0 0;
     0 1 0 1 0 0 0 0 0;
-    -mp.R(2,i) mp.R(1,i) -mp.R(4,i) mp.R(3,i) 0 0 0 1 0;
+    %-mp.R(2,i) mp.R(1,i) -mp.R(4,i) mp.R(3,i) 0 0 0 1 0; 
+    -mp.R(2,i) mp.R(1,i) -mp.R(4,i) mp.R(3,i) 0 0 0 1 -1; %reaction torque T2
     0 0 -1 0 1 0 0 0 0;
     0 0 0 -1 0 1 0 0 0;
     0 0 mp.R(6,i) -mp.R(5,i) -mp.R(8,i) mp.R(7,i) 0 0 1;
