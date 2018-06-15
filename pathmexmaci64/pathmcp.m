@@ -1,4 +1,4 @@
-function [z,f,J,mu] = pathmcp(z,l,u,cpfj,A,b,t,mu)
+function [z,f,J,mu,status] = pathmcp(z,l,u,cpfj,A,b,t,mu)
 % pathmcp(z,l,u,cpfj,A,b,t,mu)
 %
 % Solve a polyhedrally constrained variational inequality using PATH
@@ -36,9 +36,8 @@ function [z,f,J,mu] = pathmcp(z,l,u,cpfj,A,b,t,mu)
 %  f      - function evaluation at the solution
 %  J      - jacobian evaluation at the solution
 
-
+z_initial = z;
 Big = 1e20;
-
 if (nargin < 1)
   error('one input arguments required for mcp(z)');
 end
@@ -179,8 +178,12 @@ else
 end
 
 if (status ~= 1) 
+    z = z_initial;
+    f=0;
+    J=0;
+    mu= 0;
   status,
-  error('Path fails to solve problem');
+  %error('Path fails to solve problem');
 end
 
 mu = [];
