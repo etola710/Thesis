@@ -1,4 +1,4 @@
-function comp_plot(z,mp)
+function comp_plot_contactRB(z,mp)
 lp_sol = cell2mat(mp.x);
 F_14x = lp_sol(1,:);
 F_14y = lp_sol(2,:);
