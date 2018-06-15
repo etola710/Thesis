@@ -1,3 +1,4 @@
+function [z,q] = simulation_2R_block(mp)
 %% notation
 % This is the simulation for underactuated manipulation in 2D between a 2R manipulator and a box.
 
@@ -16,14 +17,14 @@
 % 1. Provide the angular impulse on each joint
 % 2. Choose suitable time-step length
 % 3. Determine the configuration of box and 2R manipulator
-clear all
 addpath(genpath('pathmexmaci64'));
-t1= load('T1.mat');
-t2 = load('T2.mat');
-T1 = t1.T1;
-T2 = t2.T2;
+
 %% input: 1)angular impulse on each joint, 2) applied impulse on box
 global tau_1 tau_2 p_x p_y p_z ;
+
+T1 = mp.lp(8,:);
+T2 = mp.lp(9,:);
+
 
 % 2R manipulator
 tau_1 = T1(1); % joint 1 (N.s)
@@ -37,42 +38,43 @@ p_z = 0; % angular impulse about z axis
 
 %% time-step length
 global h;
-h = 0.01; % time-step length (second)
+h = mp.dt;  % time-step length (second)
 
 % N - the number of iteration
-N= 50; 
+N= 150; 
 
 %% defining the global variables
 
 global I_z1 I_z2 m1 m2 L1 L2 r1 r2 m I_z L H g muRB  muBG eRB_t eBG_t ;
 
-m1 = 0.5; % mass of bar 1 of 2R manipulator
-m2 = 0.3; % mass of bar 2 
+m1 = mp.mass(1); % mass of bar 1 of 2R manipulator
+m2 = mp.mass(2); % mass of bar 2 
 
-L1 = 0.08; % length of bar 1 (meter)
-L2 = 0.05;  % length of bar 2 (meter)
+L1 = mp.links(1); % length of bar 1 (meter)
+L2 = mp.links(2);  % length of bar 2 (meter)
 r1 = L1/2; % relative position of c.m on bar 1
 r2 = L2/2; % relative position of c.m on bar 2
 
-I_z1 = m1*L1^2/12; % moment of inertia of bar 1
-I_z2 = m2*L2^2/12; % moment of inertia of bar 2
+I_z1 = mp.I(1); % moment of inertia of bar 1
+I_z2 = mp.I(2); % moment of inertia of bar 2
 
-m = 0.05; % mass of the box
+m = mp.mass(3); % mass of the box
 I_z = 1; % moment of inertia about z axis
-L = 0.05; % length of the box
-H = 0.03; % height of the box
-g = 9.80665; % acceleration due to gravity (m/s^2)
-muRB = 0.9; % coefficient of friction between the tip and box
-muBG = 0.1; % coefficient of friction between the box and ground
+H = mp.dim(1); % height of the box
+L = mp.dim(2); % length of the box
+g = mp.g_acc; % acceleration due to gravity (m/s^2)
+muRB = mp.mu(2); % coefficient of friction between the tip and box
+muBG = mp.mu(1); % coefficient of friction between the box and ground
 eRB_t = 1; 
 eBG_t = 1;
+
 
 
 
 %% determine the initial configuration of the box and 2R manipulator 
 
 % configuration of the box:
-q_x = 0.05;    % x coordinates of c.m of box
+q_x = mp.pos(1);    % x coordinates of c.m of box
 q_y = H/2;   % y coordinates of c.m of box
 theta = 0;   % orientation of the box
 
@@ -82,7 +84,7 @@ theta = 0;   % orientation of the box
 
 % assuming tip lies on the perimeter of the box
 d = 0.5; % 0<= d <= 1 related position of tip on the top side of the box
-a_x = q_x + (d-0.5)*L;
+a_x = q_x;
 a_y = H;   
 % inverse kinematics
 [theta1,theta2] = inverse_2R(L1,L2,a_x,a_y);
@@ -129,13 +131,7 @@ l(14:24,1) = 0;
 % u - upper bound
 u(1:24,1) = infty;
 
-%% vertex of the square in body frame
-V1 = [L/2;H/2;1];
-V2 = [L/2;-H/2;1];
-V3 = [-L/2;-H/2;1];
-V4 = [-L/2;H/2;1];
 
-V = [V1,V2,V3,V4];
 %% the Path solver
 for i=1:N  
     
@@ -148,60 +144,12 @@ for i=1:N
    nu_old = z(1:5,i); 
    q(:,i) = q_old;
    
-   Theta1 = q(1,i);
-   Theta2 = q(2,i);
-   
-   theta = q(5,i);
-   pointl1 = [L1*cos(Theta1) ; L1*sin(Theta1)];
-   pointl2 = pointl1 + [L2*cos(Theta1+Theta2);L2*sin(Theta1+Theta2)];
-   figure (9)
-   axis(0.1*[-3 3 -3 3])
-   axis square
-   line([0,pointl1(1)],[0,pointl1(2,1)])
-   hold on
-   line([pointl1(1),pointl2(1)],[pointl1(2,1),pointl2(2,1)])
-   hold on 
-   line([-3,3],[0,0]);
-   hold on
-   if i == 1
-       q_x = q(3,i);
-       q_y = q(4,i);
-       Ho = [cos(theta) -sin(theta) q_x;
-       sin(theta) cos(theta) q_y;
-       0 0 1];
-   else
-       v_x = z(3,i);
-       v_y = z(4,i);
-       Ho = [cos(theta) -sin(theta) v_x*h;
-       sin(theta) cos(theta) v_y*h;
-       0 0 1];
-   end
-   
-   V = Ho*V;
-   X = V(1,:);
-   Y = V(2,:);
-   fill(X,Y,'r');
    tau_1 = T1(i+1); % joint 1 (N.s)
    tau_2 = T2(i+1); % joint 2 (N.s)
-   i
+   
+   %figure_plot_sliding(q,i,L,L1,L2,H);
 end
 
 
-% % movie
-% for i = 1:N
-%     
-%     [x,y,z]=cubic([q(1,i),q(2,i),q(3,i)],len,wid,heg);
-%     a=surf(x,y,z);
-%     axis(4*[-1 1 -1 1 0 2]);
-%     xlabel('x (meter)');
-%     ylabel('y (meter)');
-%     zlabel('z (meter)');
-%     input = q(4:7,1,i);
-%     output = quater2rotate(input);
-%     direction = output(2:4);
-%     theta = output(1);
-%     rotate(a,direction,(theta/pi)*180,[q(1,i),q(2,i),q(3,i)]);
-%     pause(0.001);
-% end
 
 

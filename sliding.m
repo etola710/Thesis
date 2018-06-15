@@ -1,7 +1,9 @@
 clearvars
 close all
+%% Planning algorithm
 %Sliding Motion
-addpath(genpath('instantaneous_mechanism_method'))
+addpath(genpath('instantaneous_mechanism_method'));
+addpath(genpath('pathmexmaci64')); % path of path solver
 mp = struct();
 %finger dimensions
 mp.links = [.08 .05]; %m
@@ -29,7 +31,10 @@ mp.fval=1:length(mp.svaj_curve);
 mp = lp_dynamics_sliding(mp);
 mp.lp = cell2mat(mp.x);
 mp = torque_plot_s(mp);
-mp.filename ='sliding.gif';
-mp.gif_fps=10;
-sliding_plot(mp);
+%mp.filename ='sliding.gif';
+%mp.gif_fps=10;
+%sliding_plot(mp);
 
+%% simulation validation
+[z,q] = simulation_2R_block(mp);
+comp_plot(z,mp)
