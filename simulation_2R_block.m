@@ -41,7 +41,7 @@ global h;
 h = mp.dt;  % time-step length (second)
 
 % N - the number of iteration
-N= 150; 
+N= sum(mp.time)/h; 
 
 %% defining the global variables
 

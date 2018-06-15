@@ -24,17 +24,18 @@ mp.pos = [.05 .1 .05 .1]; %m x coordinate [inital, ..., final]
 mp.p_con = [0 ; mp.dim(1)]; %contact point x y
 %generate sliding motion plan
 mp = sliding_motion(mp);
-svaj_plot(mp);
+%svaj_plot(mp);
 %lp dynamics
 mp.x=cell(1,length(mp.svaj_curve));
 mp.fval=1:length(mp.svaj_curve);
 mp = lp_dynamics_sliding(mp);
 mp.lp = cell2mat(mp.x);
-mp = torque_plot_s(mp);
+%mp = torque_plot_s(mp);
 %mp.filename ='sliding.gif';
 %mp.gif_fps=10;
 %sliding_plot(mp);
 
 %% simulation validation
 [z,q] = simulation_2R_block(mp);
-comp_plot(z,mp)
+comp_plot_contactRB(z,mp)
+comp_plot_w_2R(z,mp)
