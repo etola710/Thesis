@@ -22,8 +22,19 @@ addpath(genpath('pathmexmaci64'));
 %% input: 1)angular impulse on each joint, 2) applied impulse on box
 global tau_1 tau_2 p_x p_y p_z ;
 
-T1 = mp.lp(8,:);
-T2 = mp.lp(9,:);
+lp_sol = cell2mat(mp.x);
+F_14x = lp_sol(1,:);
+F_14y = lp_sol(2,:);
+F_12x = lp_sol(3,:);
+F_12y = lp_sol(4,:);
+F_23x = lp_sol(5,:);
+F_23y = lp_sol(6,:);
+F_34y = lp_sol(7,:);
+
+F_34x_i = mp.mu(1)*(-sign(mp.svaj_curve(2,1)))*abs(F_34y(1));
+
+T1 = lp_sol(8,:);
+T2 = lp_sol(9,:);
 
 
 % 2R manipulator
@@ -100,17 +111,17 @@ global nu_old;
 nu_old = [0;0;0;0;0];
 
 
-%% defining the unknown variables 
+%% defining the initial guess
 
 
 
-% Z - initial guess total unknown variables
+% Z - initial guess 
 V = [0;0;0;0;0];
 P_nc = [0;0];
 Ca = [0;0;0;0;0;0];
 SIG = [0;0];
-La = [0;1;0;0;0;1;0];
-P_c = [0;m*g*h];
+La = [0;0;0;0;0;0;0];
+P_c = [0;F_34y(1)];
 Z = [V;P_nc;Ca;SIG;La;P_c];
 
 % z - unknown variables at each time step
@@ -131,15 +142,34 @@ l(14:24,1) = 0;
 % u - upper bound
 u(1:24,1) = infty;
 
+% delta 
+delta = 1e-3;
+
 
 %% the Path solver
 for i=1:N  
     
     tic
-   z(:,i) = pathmcp(Z,l,u,'mcp_funjac_2R_manipulator_block_simplified');
+    
+    [z(:,i),f,J,mu,status] = pathmcp(Z,l,u,'mcp_funjac_2R_manipulator_block_simplified');
+    j = 1;
+    while status == 0
+        j = j+1;
+        Z_initial = Z;
+        R = rand;
+        Z = Z_initial + (1+R)*delta*ones(length(Z),1);
+        [z(:,i),f,J,mu,status] = pathmcp(Z,l,u,'mcp_funjac_2R_manipulator_block_simplified');
+        if j>=10
+            error('Path can not found the solution, change your initial guess');
+        end
+    end
+    Z = z(:,i); % updating the initial guess for each iteration
+    
+
+   
    toc
    
-   Z = z(:,i); % updating the initial guess for each iteration
+   
    q_old = q_old + h*z(1:5,i); 
    nu_old = z(1:5,i); 
    q(:,i) = q_old;

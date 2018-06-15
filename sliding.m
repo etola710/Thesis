@@ -20,7 +20,7 @@ mp.g_dir = 3*pi/2;
 mp.g_force = [mp.g_acc*cos(mp.g_dir) mp.g_acc*sin(mp.g_dir)]; %Fg_x Fg_y
 %motion primitive
 mp.time = [.5 .5 .5]; %s time for each step
-mp.pos = [.05 .1 .05 .1]; %m x coordinate [inital, ..., final]
+mp.pos = [.05 .1 .05 .05]; %m x coordinate [inital, ..., final]
 mp.p_con = [0 ; mp.dim(1)]; %contact point x y
 %generate sliding motion plan
 mp = sliding_motion(mp);
@@ -36,6 +36,11 @@ mp.lp = cell2mat(mp.x);
 %sliding_plot(mp);
 
 %% simulation validation
+% z - variables contains the state of the system and lagrange variables
+% q - configuration of the system
 [z,q] = simulation_2R_block(mp);
-comp_plot_contactRB(z,mp)
-comp_plot_w_2R(z,mp)
+
+%% compare the result from planning algorithm and simulator
+comp_plot_contactRB(z,mp) % F23
+comp_plot_contactBG(z,mp) % F34
+comp_plot_w_2R(z,mp) % w1 and w2
