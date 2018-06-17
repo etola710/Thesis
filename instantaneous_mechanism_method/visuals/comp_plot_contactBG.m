@@ -1,4 +1,4 @@
-function comp_plot_contactBG(z,mp)
+function comp_plot_contactBG(z,mp,N)
 
 lp_sol = cell2mat(mp.x);
 F_14x = lp_sol(1,:);
@@ -20,7 +20,7 @@ end
 F_34y_s = [0,z(24,:)]/h;
 F_34x_s = [0,z(7,:)]/h;
 
-N = 50;
+
 T = mp.tp(1:N);
 figure
 subplot(2,1,1)

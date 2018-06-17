@@ -1,4 +1,4 @@
-function comp_plot_contactRB(z,mp)
+function comp_plot_contactRB(z,mp,N)
 lp_sol = cell2mat(mp.x);
 F_14x = lp_sol(1,:);
 F_14y = lp_sol(2,:);
@@ -15,7 +15,7 @@ h = mp.dt;
 F_23y_s = [0,z(23,:)]/h;
 F_23x_s = [0,z(6,:)]/h;
 
-N = 50;
+
 T = mp.tp(1:N);
 figure 
 subplot(2,1,1)

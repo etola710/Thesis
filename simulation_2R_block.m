@@ -1,4 +1,4 @@
-function [z,q] = simulation_2R_block(mp)
+function [z,q] = simulation_2R_block(mp,initial_N)
 %% notation
 % This is the simulation for underactuated manipulation in 2D between a 2R manipulator and a box.
 
@@ -38,8 +38,8 @@ T2 = lp_sol(9,:);
 
 
 % 2R manipulator
-tau_1 = T1(1); % joint 1 (N.s)
-tau_2 = T2(1); % joint 2 (N.s)
+tau_1 = T1(initial_N); % joint 1 (N.s)
+tau_2 = T2(initial_N); % joint 2 (N.s)
 
 % box
 p_x = 0; % applied impulse along x axis
@@ -85,7 +85,7 @@ eBG_t = 1;
 %% determine the initial configuration of the box and 2R manipulator 
 
 % configuration of the box:
-q_x = mp.pos(1);    % x coordinates of c.m of box
+q_x = mp.svaj_curve(1,initial_N);    % x coordinates of c.m of box
 q_y = H/2;   % y coordinates of c.m of box
 theta = 0;   % orientation of the box
 
@@ -108,20 +108,18 @@ q_old = [theta1;theta2;q_x;q_y;theta];
 % nu_old - generalized velocity vector at l, nu_old=[w_1o;w_2o;v_xo;v_yo;w_o]
 global nu_old;
 
-nu_old = [0;0;0;0;0];
+nu_old = [mp.w(1,initial_N);mp.w(2,initial_N);mp.svaj_curve(2,initial_N);0;0];
 
 
 %% defining the initial guess
-
-
 
 % Z - initial guess 
 V = [0;0;0;0;0];
 P_nc = [0;0];
 Ca = [0;0;0;0;0;0];
 SIG = [0;0];
-La = [0;0;0;0;0;0;0];
-P_c = [0;F_34y(1)];
+La = [0;1;0;0;0;0;0];
+P_c = [0;0];
 Z = [V;P_nc;Ca;SIG;La;P_c];
 
 % z - unknown variables at each time step
@@ -141,13 +139,13 @@ l(14:24,1) = 0;
 
 % u - upper bound
 u(1:24,1) = infty;
-
+u(14,1) = 1;
 % delta 
 delta = 1e-3;
 
 
 %% the Path solver
-for i=1:N  
+for i=initial_N:N  
     
     tic
     

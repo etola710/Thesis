@@ -1,6 +1,5 @@
-function comp_plot_w_2R(z,mp)
+function comp_plot_w_2R(z,mp,N)
 
-N = 50;
 T = mp.tp(1:N);
 w1 = mp.w(1,:);
 w2 = mp.w(2,:);
