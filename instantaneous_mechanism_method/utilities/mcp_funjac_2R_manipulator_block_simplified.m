@@ -150,7 +150,7 @@ vRB_y = J12*w_1 + J22*w_2 -v_y;
 vRB_t = tRB_x*vRB_x + tRB_y*vRB_y;
 vBG_t = (v_x - w*(a2BG_y - q_y));
 
-%% 
+
 
 %% Dynamic equations
 F(1) = A11*(w_1 - w_1o) + A12*(w_2 - w_2o) + B11*h*w_1 + B12*h*w_2 - tauRB_1*h  - tau_g1*h - tau_1*h ;
