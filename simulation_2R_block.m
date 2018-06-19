@@ -22,7 +22,8 @@ addpath(genpath('pathmexmaci64'));
 %% input: 1)angular impulse on each joint, 2) applied impulse on box
 global tau_1 tau_2 p_x p_y p_z ;
 
-lp_sol = cell2mat(mp.x);
+unit = 1;
+lp_sol = cell2mat(mp.x)*unit^2;
 F_14x = lp_sol(1,:);
 F_14y = lp_sol(2,:);
 F_12x = lp_sol(3,:);
@@ -32,6 +33,9 @@ F_23y = lp_sol(6,:);
 F_34y = lp_sol(7,:);
 
 F_34x_i = mp.mu(1)*(-sign(mp.svaj_curve(2,1)))*abs(F_34y(1));
+
+
+
 
 T1 = lp_sol(8,:);
 T2 = lp_sol(9,:);
@@ -58,22 +62,22 @@ N= sum(mp.time)/h;
 
 global I_z1 I_z2 m1 m2 L1 L2 r1 r2 m I_z L H g muRB  muBG eRB_t eBG_t ;
 
-m1 = mp.mass(1); % mass of bar 1 of 2R manipulator
-m2 = mp.mass(2); % mass of bar 2 
+m1 = mp.mass(1)*unit; % mass of bar 1 of 2R manipulator
+m2 = mp.mass(2)*unit; % mass of bar 2 
 
-L1 = mp.links(1); % length of bar 1 (meter)
-L2 = mp.links(2);  % length of bar 2 (meter)
+L1 = mp.links(1)*unit; % length of bar 1 (meter)
+L2 = mp.links(2)*unit;  % length of bar 2 (meter)
 r1 = L1/2; % relative position of c.m on bar 1
 r2 = L2/2; % relative position of c.m on bar 2
 
 I_z1 = mp.I(1); % moment of inertia of bar 1
 I_z2 = mp.I(2); % moment of inertia of bar 2
 
-m = mp.mass(3); % mass of the box
+m = mp.mass(3)*unit; % mass of the box
 I_z = 1; % moment of inertia about z axis
-H = mp.dim(1); % height of the box
-L = mp.dim(2); % length of the box
-g = mp.g_acc; % acceleration due to gravity (m/s^2)
+H = mp.dim(1)*unit; % height of the box
+L = mp.dim(2)*unit; % length of the box
+g = mp.g_acc*unit; % acceleration due to gravity (m/s^2)
 muRB = mp.mu(2); % coefficient of friction between the tip and box
 muBG = mp.mu(1); % coefficient of friction between the box and ground
 eRB_t = 1; 
@@ -85,7 +89,7 @@ eBG_t = 1;
 %% determine the initial configuration of the box and 2R manipulator 
 
 % configuration of the box:
-q_x = mp.svaj_curve(1,initial_N);    % x coordinates of c.m of box
+q_x = mp.svaj_curve(1,initial_N)*unit;    % x coordinates of c.m of box
 q_y = H/2;   % y coordinates of c.m of box
 theta = 0;   % orientation of the box
 
@@ -108,18 +112,18 @@ q_old = [theta1;theta2;q_x;q_y;theta];
 % nu_old - generalized velocity vector at l, nu_old=[w_1o;w_2o;v_xo;v_yo;w_o]
 global nu_old;
 
-nu_old = [mp.w(1,initial_N);mp.w(2,initial_N);mp.svaj_curve(2,initial_N);0;0];
+nu_old = [mp.w(1,initial_N);mp.w(2,initial_N);mp.svaj_curve(2,initial_N)*unit;0;0];
 
 
 %% defining the initial guess
 
 % Z - initial guess 
 V = [0;0;0;0;0];
-P_nc = [0;0];
+P_nc = [m*g*h;m*g*h];
 Ca = [0;0;0;0;0;0];
 SIG = [0;0];
 La = [0;1;0;0;0;0;0];
-P_c = [0;0];
+P_c = [0;0.0065];
 Z = [V;P_nc;Ca;SIG;La;P_c];
 
 % z - unknown variables at each time step
@@ -139,9 +143,9 @@ l(14:24,1) = 0;
 
 % u - upper bound
 u(1:24,1) = infty;
-u(14,1) = 1;
+
 % delta 
-delta = 1e-3;
+delta = 1e-1*unit;
 
 
 %% the Path solver

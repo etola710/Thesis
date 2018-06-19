@@ -42,7 +42,7 @@ initial_N = 10;
 [z,q] = simulation_2R_block(mp,initial_N);
 
 %% compare the result from planning algorithm and simulator
-N_step = 40;
+N_step = 50;
 comp_plot_contactRB(z,mp,N_step) % F23
 comp_plot_contactBG(z,mp,N_step) % F34
 comp_plot_w_2R(z,mp,N_step) % w1 and w2
