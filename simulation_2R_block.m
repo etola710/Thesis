@@ -118,7 +118,7 @@ nu_old = [mp.w(1,initial_N);mp.w(2,initial_N);mp.svaj_curve(2,initial_N)*unit;0;
 %% defining the initial guess
 
 % Z - initial guess 
-V = [0;0;0;0;0];
+V = [mp.w(1,initial_N+1);mp.w(2,initial_N+1);mp.svaj_curve(2,initial_N+1)*unit;0;0];
 P_nc = [m*g*h;m*g*h];
 Ca = [0;0;0;0;0;0];
 SIG = [0;0];
@@ -167,7 +167,7 @@ for i=initial_N:N
     end
     Z = z(:,i); % updating the initial guess for each iteration
     
-
+    
    
    toc
    

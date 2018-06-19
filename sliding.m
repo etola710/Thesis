@@ -38,11 +38,13 @@ mp.lp = cell2mat(mp.x);
 %% simulation validation
 % z - variables contains the state of the system and lagrange variables
 % q - configuration of the system
-initial_N = 10;
+initial_N = 50; % initial time to simulate
 [z,q] = simulation_2R_block(mp,initial_N);
 
 %% compare the result from planning algorithm and simulator
-N_step = 50;
+N_step = 100; % length of step decide to plot
 comp_plot_contactRB(z,mp,N_step) % F23
 comp_plot_contactBG(z,mp,N_step) % F34
 comp_plot_w_2R(z,mp,N_step) % w1 and w2
+
+comp_plot_positionBlock(q,z,mp,N_step)
