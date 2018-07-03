@@ -4,7 +4,11 @@ close all
 %Sliding Motion
 addpath(genpath('instantaneous_mechanism_method'));
 %addpath(genpath('pathmexmaci64')); % path of path solver mac
+<<<<<<< HEAD
 addpath(genpath('pathmexmaci64')); % path of path solver windows
+=======
+addpath(genpath('pathmexw64')); % path of path solver windows
+>>>>>>> 4874f67a38f0c7cd71d32191a96b16d913acfc25
 mp = struct();
 %finger dimensions
 mp.links = [.08 .05]; %m
@@ -41,6 +45,7 @@ mp.gif_fps=10;
 %% simulation validation
 % z - variables contains the state of the system and lagrange variables
 % q - configuration of the system
+<<<<<<< HEAD
 
 % initial_N = 10; % initial time to simulate
 % [z,q] = simulation_2R_block(mp,initial_N);
@@ -53,6 +58,13 @@ initial_N = 1; % initial time to simulate
 
 %% compare the result from planning algorithm and simulator
 
+=======
+initial_N = 1; % initial time to simulate
+[z,q] = simulation_2R_block_cl(mp,initial_N);
+
+%% compare the result from planning algorithm and simulator
+N_step = 150; % length of step decide to plot
+>>>>>>> 4874f67a38f0c7cd71d32191a96b16d913acfc25
 comp_plot_contactRB(z,mp,N_step) % F23
 comp_plot_contactBG(z,mp,N_step) % F34
 comp_plot_w_2R(z,mp,N_step) % w1 and w2

@@ -42,8 +42,12 @@ h = mp.dt;  % time-step length (second)
 
 % N - the number of iteration
 N= sum(mp.time)/h;
+<<<<<<< HEAD
 global N_step
 N = N_step;
+=======
+
+>>>>>>> 4874f67a38f0c7cd71d32191a96b16d913acfc25
 %% defining the global variables
 
 global I_z1 I_z2 m1 m2 L1 L2 r1 r2 m I_z L H g muRB  muBG eRB_t eBG_t ;
@@ -130,7 +134,11 @@ l(14:24,1) = 0;
 u(1:24,1) = infty;
 
 % delta
+<<<<<<< HEAD
 delta = 2e-1*unit;
+=======
+delta = 1e-1*unit;
+>>>>>>> 4874f67a38f0c7cd71d32191a96b16d913acfc25
 
 %closed loop
 cl_struct(1:2) = mp; %structure array
@@ -185,8 +193,13 @@ for i=initial_N:N
         %simulation steps
         q_vec = q_old; %previous
         nu_vec = nu_old; %previous
+<<<<<<< HEAD
         q_old = q_old + h*z_cl(1:5,k); %next
         nu_old = z_cl(1:5,k); %next
+=======
+        q_old = q_old + h*z(1:5,k); %next
+        nu_old = z(1:5,k); %next
+>>>>>>> 4874f67a38f0c7cd71d32191a96b16d913acfc25
         q_cl(:,:,k) = q_old;
         Z = z_cl(:,k);
         [~, cg_pos_old] = DK_2R(mp.links,[q_vec(1),q_vec(2)]);

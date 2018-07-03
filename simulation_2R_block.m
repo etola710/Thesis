@@ -32,6 +32,7 @@ F_23x = lp_sol(5,:);
 F_23y = lp_sol(6,:);
 F_34y = lp_sol(7,:);
 F_34x_i = mp.mu(1)*(-sign(mp.svaj_curve(2,1)))*abs(F_34y(1));
+<<<<<<< HEAD
 
 
 
@@ -39,6 +40,8 @@ F_34x_i = mp.mu(1)*(-sign(mp.svaj_curve(2,1)))*abs(F_34y(1));
 T1 = lp_sol(8,:)*unit;
 T2 = lp_sol(9,:)*unit;
 
+=======
+>>>>>>> 4874f67a38f0c7cd71d32191a96b16d913acfc25
 T1 = lp_sol(8,:);
 T2 = lp_sol(9,:);
 
