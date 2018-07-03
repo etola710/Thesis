@@ -1,21 +1,23 @@
 function mp = tipping_motion(mp)
 mp = motion_generation(mp);
-s=mp.svaj_curve(1,:);
-v=mp.svaj_curve(2,:);
-a=mp.svaj_curve(3,:);
+s=mp.svaj_curve(1,:); %theta
 x_cg=zeros(2,length(s));
 y_cg=zeros(2,length(s));
+v_cg=zeros(2,length(s));
+a_cg=zeros(2,length(s));
 x_j=zeros(2,length(s));
 y_j=zeros(2,length(s));
 v_x=zeros(2,length(s));
 v_y=zeros(2,length(s));
 a_x=zeros(2,length(s));
 a_y=zeros(2,length(s));
-w = zeros(3,length(s));
-alpha = zeros(3,length(s));
+w = zeros(2,length(s));
+alpha = zeros(2,length(s));
 th1=zeros(1,length(s));
 th2=zeros(1,length(s));
 dirs=zeros(6,length(s));
+xbox = zeros(4,length(s));
+ybox = zeros(4,length(s));
 r1_mag = mp.links(1)/2;
 r2_mag = mp.links(2)/2;
 r3_mag = sqrt((mp.p_con(1)^2+(mp.dim(1)/2)^2));
@@ -35,16 +37,21 @@ p_cw=zeros(2,length(s)); % contact position wrt W
 R_matrix=@(th) [cos(th),-sin(th);sin(th),cos(th)];
 %}
 %no slip condition assumed
-theta = zeros(1,length(s));
-for i=2:length(s)
-    theta(i) = (s(1)-s(i))/mp.dim;
-end
-
+theta_cg = zeros(1,length(s));
+theta_cg(1) = atan2(mp.obj_cg(2),mp.obj_cg(1));
+po_cg(:,1) = [mp.obj_cg(1);mp.obj_cg(2)];
+mp.cg_r = sqrt((mp.tip_pnt(1)-po_cg(1))^2 + (mp.tip_pnt(2)-po_cg(2))^2);
 for i=1:length(s)
     %x = R theta
-    po_cg(:,i) = [s(i);mp.dim];
-    p_c(:,i) = [mp.dim*cos(pi/2);mp.dim*sin(pi/2)]; %contact at top of circle
-    p_cw(:,i) = po_cg(:,i) + R_matrix(theta(i))*(p_c(:,i)); %contact points
+    if i ~= 1
+        theta_cg(i) = s(i)+ theta_cg(i-1);
+        po_cg(:,i) = [mp.cg_r*cos(theta_cg(i));mp.cg_r*sin(theta_cg(i))];
+        p_c(:,i) = po_cg(:,i) + mp.p_con; %
+        p_cw(:,i) = po_cg(:,i) + R_matrix(s(i))*(p_c(:,i)); %contact point
+    else
+        p_c(:,i) = po_cg(:,i) + mp.p_con;
+        p_cw(:,i) = po_cg(:,i) + R_matrix(s(i))*(p_c(:,i)); %contact point
+    end
     sol=IK_2R(mp.links(1),mp.links(2),p_cw(1,i),p_cw(2,i));
     th1(i) = sol(1,1);
     th2(i) = sol(2,1);
@@ -53,12 +60,17 @@ for i=1:length(s)
     y_cg(:,i) = cg_pos(2,:)';
     x_j(:,i) = joint_pos(1,:)'; %joints
     y_j(:,i) = joint_pos(2,:)';
+    [xcorner,ycorner]=corners(po_cg(:,i),mp.dim);
+    box_corners = [xcorner ; ycorner];
+    box_vec = R_matrix(s(i))*box_corners;
+    xbox(:,i) = box_vec(1,:)';
+    ybox(:,i) = box_vec(2,:)';
     dir1 = vec2ang([0;0],[x_cg(1,i);y_cg(1,i)]);
     dir2 = vec2ang([x_j(1,i);y_j(1,i)],[x_cg(1,i);y_cg(1,i)]);
     dir3 = vec2ang([x_j(1,i);y_j(1,i)],[x_cg(2,i);y_cg(2,i)]);
     dir4 = vec2ang([x_j(2,i);y_j(2,i)],[x_cg(2,i);y_cg(2,i)]);
     dir5 = vec2ang(p_cw(:,i),po_cg(:,i));
-    dir6 = vec2ang([po_cg(1,i),0],po_cg(:,i));
+    dir6 = vec2ang(mp.tip_pnt,po_cg(:,i));
     dirs(:,i) = [dir1;dir2;dir3;dir4;dir5;dir6];
     %link 1
     [r_14(1,i),r_14(2,i)] = vector_lncs(r1_mag,dir1);
@@ -73,6 +85,11 @@ end
 
 %vel and accel approximate IC=0
 for i=2:length(s)
+    %linear object
+    v_cg(1,i) = mp.cg_r*theta_cg(i)*cos(theta_cg(i));
+    v_cg(2,i) = mp.cg_r*theta_cg(i)*sin(theta_cg(i));
+    a_cg(1,i) = mp.cg_r*v_cg(i)*cos(theta_cg(i));
+    a_cg(2,i) = mp.cg_r*v_cg(i)*sin(theta_cg(i));
     %linear links
     v_x(:,i) = (x_cg(:,i) - x_cg(:,i-1))/mp.dt;
     v_y(:,i) = (y_cg(:,i) - y_cg(:,i-1))/mp.dt;
@@ -81,11 +98,11 @@ for i=2:length(s)
     %angular links
     w(1,i) = (th1(i) - th1(i-1))/mp.dt;
     w(2,i) = ((th2(i)+th1(i)) - (th2(i-1)+th1(i-1)))/mp.dt;
-    w(3,i) = (theta(i) - theta(i-1))/mp.dt;
     alpha(1,i) = (w(1,i) - w(1,i-1))/mp.dt;
     alpha(2,i) = (w(2,i) - w(2,i-1))/mp.dt;
-    alpha(3,i) = (w(3,i)-w(3,i-1))/mp.dt;
 end
+mp.xbox = xbox;
+mp.ybox = ybox;
 mp.p_j = [x_j;y_j];
 mp.p_cg = [x_cg;y_cg];
 mp.po_cg = po_cg;
@@ -94,8 +111,10 @@ mp.p_cw=p_cw;
 mp.R = [r_14;r_12;r_21;r_23;r_32;r_34];
 mp.v_links = [v_x;v_y];
 mp.a_links = [a_x;a_y];
+mp.v_cg = v_cg;
+mp.a_cg = a_cg;
 mp.alpha = alpha;
 mp.w = w;
 mp.dirs = dirs;
-mp.theta=theta;
+mp.theta_cg=theta_cg;
 end

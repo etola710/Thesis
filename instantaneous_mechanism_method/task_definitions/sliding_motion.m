@@ -42,9 +42,8 @@ for i=1:length(s)
     %object - to be replaced with generic object function
     po_cg(:,i) = [s(i),mp.dim(1)/2];
     [xcorner,ycorner]=corners(po_cg(:,i),mp.dim);
-    xbox(1:4,i) = xcorner';
-    ybox(1:4,i) = ycorner';
-    
+    xbox(:,i) = xcorner';
+    ybox(:,i) = ycorner';
     dir1 = vec2ang([0;0],[x_cg(1,i);y_cg(1,i)]);
     dir2 = vec2ang([x_j(1,i);y_j(1,i)],[x_cg(1,i);y_cg(1,i)]);
     dir3 = vec2ang([x_j(1,i);y_j(1,i)],[x_cg(2,i);y_cg(2,i)]);
