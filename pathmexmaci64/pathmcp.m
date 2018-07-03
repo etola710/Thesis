@@ -150,7 +150,7 @@ if ~issparse(J)
   error([cpfj ' must return a sparse Jacobian']);
 end
 
-nnzJ = 10*nzmax(J);
+nnzJ = 5*nzmax(J);
 
 row = n + m;
 ele = nnzJ + nzmax(A);

@@ -1,5 +1,5 @@
 Path 4.7.03: Matlab Link
-24 row/cols, 576 non-zeros, 100.00% dense.
+21 row/cols, 441 non-zeros, 100.00% dense.
 
 Could not open options file: path.opt
 Using defaults.
@@ -7,59 +7,92 @@ Path 4.7.03 (Fri Feb 10 15:00:24 2012)
 Written by Todd Munson, Steven Dirkse, and Michael Ferris
 
 INITIAL POINT STATISTICS
-Zero column of order. . . . . .  3.8651e-14 var: (x[   17])
 Zero row of order . . . . . . .  0.0000e+00 eqn: (f[   17])
-Total zero columns. . . . . . .  1
 Total zero rows . . . . . . . .  1
-Maximum of X. . . . . . . . . .  1.0000e+00 var: (x[   17])
-Maximum of F. . . . . . . . . .  5.0000e-02 eqn: (f[   20])
-Maximum of Grad F . . . . . . .  1.0000e+00 eqn: (f[    5])
-                                            var: (x[    5])
+Maximum of X. . . . . . . . . .  1.0663e+00 var: (x[   17])
+Maximum of F. . . . . . . . . .  1.0369e+00 eqn: (f[   16])
+Maximum of Grad F . . . . . . .  8.6842e+00 eqn: (f[    1])
+                                            var: (x[    6])
 
 INITIAL JACOBIAN NORM STATISTICS
-Maximum Row Norm. . . . . . . .  3.0000e+00 eqn: (f[   11])
-Minimum Row Norm. . . . . . . .  9.7633e-03 eqn: (f[   15])
-Maximum Column Norm . . . . . .  4.0063e+00 var: (x[   13])
-Minimum Column Norm . . . . . .  3.8651e-14 var: (x[   17])
+Maximum Row Norm. . . . . . . .  1.7458e+01 eqn: (f[    1])
+Minimum Row Norm. . . . . . . .  3.0086e-02 eqn: (f[   20])
+Maximum Column Norm . . . . . .  2.3500e+01 var: (x[    6])
+Minimum Column Norm . . . . . .  6.6269e-02 var: (x[   14])
 
 Crash Log
 major  func  diff  size  residual    step       prox   (label)
-    0     0             3.7489e-04             0.0e+00 (f[    5])
-    1     1     0    20 9.4910e-06  1.0e+00    3.7e-06 (f[    5])
-pn_search terminated: no basis change.
+    0     0             3.4031e+00             0.0e+00 (f[   16])
+pn_search terminated: no progress.
 
 Major Iteration Log
 major minor  func  grad  residual    step  type prox    inorm  (label)
-    0     0     2     2 9.4910e-06           I 9.5e-08 9.5e-06 (f[    5])
-    1     1     3     3 4.2662e-09  1.0e+00 SO 3.8e-08 4.3e-09 (f[    5])
+    0     0    13     1 3.4031e+00           I 3.4e-02 2.0e+00 (f[   16])
+    1     9    14     2 nan  1.0e+00 RL 1.4e-02 nan (f[    1])
+    2     1    15     3 nan  1.0e+00 SD nan nan (f[    1])
+    3     1    16     4 nan  1.0e+00 SD nan nan (f[    1])
+    4     1    17     5 nan  1.0e+00 SD nan nan (f[    1])
+    5     1    18     6 nan  1.0e+00 SD nan nan (f[    1])
+    6     1    19     7 nan  1.0e+00 SD nan nan (f[    1])
+    7     1    20     8 nan  1.0e+00 SD nan nan (f[    1])
+    8     1    21     9 nan  1.0e+00 SD nan nan (f[    1])
+    9     1    22    10 nan  1.0e+00 SD nan nan (f[    1])
+   10     1    31    11 1.0057e+01  2.3e-02 SW 1.4e-02 6.9e+00 (f[    7])
+   11    84    32    12 1.0108e+01  1.0e+00 CO 5.4e-03 7.0e+00 (f[    7])
+   12     5    38    13 1.4221e+01  2.1e-01 RB 2.2e-03 1.1e+01 (f[   15])
+   13    55    39    14 2.2113e+01  1.0e+00 CD 8.7e-04 2.0e+01 (f[    7])
+   14    35    40    15 1.9684e+01  1.0e+00 CD 3.5e-04 1.7e+01 (f[    7])
+   15    76    41    16 1.7912e+01  1.0e+00 CD 1.4e-04 1.6e+01 (f[    7])
+   16    11    44    17 1.4789e+01  6.4e-01 SW 2.2e-03 1.1e+01 (f[    7])
+   17    51    45    18 1.3719e+01  1.0e+00 CO 8.7e-04 9.6e+00 (f[    7])
+   18    36    46    19 1.1777e+01  1.0e+00 CO 3.5e-04 7.6e+00 (f[    7])
+   19     3    54    20 1.0526e+01  5.5e-02 SB 1.4e-04 7.2e+00 (f[    7])
+   20     2    61    21 1.1182e+01  1.3e-01 SB 5.6e-05 8.3e+00 (f[    6])
+   21     5    62    22 2.8495e+01  1.0e+00 SD 2.2e-05 1.7e+01 (f[    1])
+   22     4    63    23 1.5769e+00  1.0e+00 SO 8.9e-06 1.3e+00 (f[    7])
+   23     1    64    24 4.2495e-01  1.0e+00 SO 3.6e-06 3.3e-01 (f[    7])
+   24     1    65    25 1.6832e-01  1.0e+00 SO 1.4e-06 1.1e-01 (f[   12])
+   25     1    66    26 5.7893e-02  1.0e+00 SO 5.7e-07 3.8e-02 (f[   13])
+   26     1    67    27 8.3958e-03  1.0e+00 SO 2.3e-07 5.4e-03 (f[    5])
+   27     1    68    28 3.0574e-03  1.0e+00 SO 9.1e-08 2.8e-03 (f[    5])
+   28     1    69    29 1.4221e-03  1.0e+00 SO 3.7e-08 1.4e-03 (f[    5])
+   29     1    70    30 6.9668e-04  1.0e+00 SO 1.5e-08 6.9e-04 (f[    5])
+   30     1    71    31 3.4646e-04  1.0e+00 SO 5.8e-09 3.5e-04 (f[    5])
+   31     1    72    32 1.7298e-04  1.0e+00 SO 2.3e-09 1.7e-04 (f[    5])
+   32     1    73    33 8.6456e-05  1.0e+00 SO 9.4e-10 8.6e-05 (f[    5])
+   33     1    74    34 4.3222e-05  1.0e+00 SO 3.7e-10 4.3e-05 (f[    5])
+   34     1    75    35 2.1610e-05  1.0e+00 SO 1.5e-10 2.2e-05 (f[    5])
+   35     1    76    36 1.0805e-05  1.0e+00 SO 6.0e-11 1.1e-05 (f[    5])
+   36     1    77    37 5.4022e-06  1.0e+00 SO 2.4e-11 5.4e-06 (f[    5])
+   37     1    78    38 2.7011e-06  1.0e+00 SO 9.6e-12 2.7e-06 (f[    5])
+   38     1    79    39 1.3505e-06  1.0e+00 SO 3.8e-12 1.4e-06 (f[    5])
+   39     1    80    40 6.7527e-07  1.0e+00 SO 1.5e-12 6.8e-07 (f[    5])
 
 FINAL STATISTICS
-Inf-Norm of Complementarity . .  4.2662e-09 eqn: (f[    5])
-Inf-Norm of Normal Map. . . . .  4.2662e-09 eqn: (f[    5])
-Inf-Norm of Minimum Map . . . .  4.2662e-09 eqn: (f[    5])
-Inf-Norm of Fischer Function. .  4.2662e-09 eqn: (f[    5])
-Inf-Norm of Grad Fischer Fcn. .  4.2662e-09 eqn: (f[    5])
-Two-Norm of Grad Fischer Fcn. .  4.3092e-09
+Inf-Norm of Complementarity . .  6.7526e-07 eqn: (f[    5])
+Inf-Norm of Normal Map. . . . .  6.7526e-07 eqn: (f[    5])
+Inf-Norm of Minimum Map . . . .  6.7526e-07 eqn: (f[    5])
+Inf-Norm of Fischer Function. .  6.7526e-07 eqn: (f[    5])
+Inf-Norm of Grad Fischer Fcn. .  6.7526e-07 eqn: (f[    5])
+Two-Norm of Grad Fischer Fcn. .  7.5467e-07
 
 FINAL POINT STATISTICS
-Zero column of order. . . . . .  4.0925e-14 var: (x[   17])
 Zero row of order . . . . . . .  0.0000e+00 eqn: (f[   17])
-Total zero columns. . . . . . .  1
 Total zero rows . . . . . . . .  1
-Maximum of X. . . . . . . . . .  1.0000e+00 var: (x[   17])
-Maximum of F. . . . . . . . . .  5.0000e-02 eqn: (f[   20])
-Maximum of Grad F . . . . . . .  1.0000e+00 eqn: (f[    5])
-                                            var: (x[    5])
+Maximum of X. . . . . . . . . .  6.3447e+00 var: (x[   19])
+Maximum of F. . . . . . . . . .  3.4141e-01 eqn: (f[   21])
+Maximum of Grad F . . . . . . .  6.3447e+00 eqn: (f[   12])
+                                            var: (x[   12])
 
  ** EXIT - solution found.
 
-Major Iterations. . . . 1
-Minor Iterations. . . . 1
+Major Iterations. . . . 39
+Minor Iterations. . . . 462
 Restarts. . . . . . . . 0
-Crash Iterations. . . . 1
+Crash Iterations. . . . 0
 Gradient Steps. . . . . 0
-Function Evaluations. . 3
-Gradient Evaluations. . 3
-Basis Time. . . . . . . 0.000440
-Total Time. . . . . . . 0.011413
-Residual. . . . . . . . 4.266183e-09
+Function Evaluations. . 80
+Gradient Evaluations. . 40
+Basis Time. . . . . . . 0.005150
+Total Time. . . . . . . 0.032296
+Residual. . . . . . . . 6.752671e-07

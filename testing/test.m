@@ -1,4 +1,4 @@
-function [z,q] = simulation_2R_block(mp,initial_N)
+
 %% notation
 % This is the simulation for underactuated manipulation in 2D between a 2R manipulator and a box.
 
@@ -17,33 +17,14 @@ function [z,q] = simulation_2R_block(mp,initial_N)
 % 1. Provide the angular impulse on each joint
 % 2. Choose suitable time-step length
 % 3. Determine the configuration of box and 2R manipulator
-addpath(genpath('pathmexmaci64'));
+
 
 %% input: 1)angular impulse on each joint, 2) applied impulse on box
 global tau_1 tau_2 p_x p_y p_z ;
 
-unit = 1;
-lp_sol = cell2mat(mp.x)*unit;
-F_14x = lp_sol(1,:);
-F_14y = lp_sol(2,:);
-F_12x = lp_sol(3,:);
-F_12y = lp_sol(4,:);
-F_23x = lp_sol(5,:);
-F_23y = lp_sol(6,:);
-F_34y = lp_sol(7,:);
 
-F_34x_i = mp.mu(1)*(-sign(mp.svaj_curve(2,1)))*abs(F_34y(1));
-
-
-
-
-T1 = lp_sol(8,:)*unit;
-T2 = lp_sol(9,:)*unit;
-
-
-% 2R manipulator
-tau_1 = (T1(initial_N)+T1(initial_N))/2; % joint 1 (N.s)
-tau_2 = (T2(initial_N)+T2(initial_N))/2; % joint 2 (N.s)
+tau_1 = 0; % joint 1 (N.s)
+tau_2 = 0; % joint 2 (N.s)
 
 % box
 p_x = 0; % applied impulse along x axis
@@ -60,26 +41,26 @@ N= sum(mp.time)/h;
 
 %% defining the global variables
 
-global I_z1 I_z2 m1 m2 L1 L2 r1 r2 m I_z L H g muRB  muBG eRB_t eBG_t ;
+global I_z1 I_z2 m1 m2 L1 L2 r1 r2 m I_z R g muRB  muBG eRB_t eBG_t ;
 
-m1 = mp.mass(1); % mass of bar 1 of 2R manipulator
-m2 = mp.mass(2); % mass of bar 2 
+m1 = 1; % mass of bar 1 of 2R manipulator
+m2 = 1; % mass of bar 2 
 
-L1 = mp.links(1)*unit; % length of bar 1 (meter)
-L2 = mp.links(2)*unit;  % length of bar 2 (meter)
+L1 = 1; % length of bar 1 (meter)
+L2 = 1;  % length of bar 2 (meter)
 r1 = L1/2; % relative position of c.m on bar 1
 r2 = L2/2; % relative position of c.m on bar 2
 
-I_z1 = mp.I(1)*unit^2; % moment of inertia of bar 1
-I_z2 = mp.I(2)*unit^2; % moment of inertia of bar 2
+I_z1 = 1; % moment of inertia of bar 1
+I_z2 = 1; % moment of inertia of bar 2
 
-m = mp.mass(3); % mass of the box
+m = 1; % mass of the box
 I_z = 1; % moment of inertia about z axis
-H = mp.dim(1)*unit; % height of the box
-L = mp.dim(2)*unit; % length of the box
+R = 1; % radius of the circle
+
 g = mp.g_acc*unit; % acceleration due to gravity (m/s^2)
-muRB = mp.mu(2); % coefficient of friction between the tip and box
-muBG = mp.mu(1); % coefficient of friction between the box and ground
+muRB = 0.9; % coefficient of friction between the tip and circle
+muBG = 0.1; % coefficient of friction between the box and ground
 eRB_t = 1; 
 eBG_t = 1;
 
@@ -89,8 +70,8 @@ eBG_t = 1;
 %% determine the initial configuration of the box and 2R manipulator 
 
 % configuration of the box:
-q_x = mp.svaj_curve(1,initial_N)*unit;    % x coordinates of c.m of box
-q_y = H/2;   % y coordinates of c.m of box
+q_x = 1;    % x coordinates of c.m of box
+q_y = R;   % y coordinates of c.m of box
 theta = 0;   % orientation of the box
 
 % configuration of the 2R manipulator:
@@ -99,7 +80,7 @@ theta = 0;   % orientation of the box
 
 % assuming tip lies on the perimeter of the box
 a_x = q_x;
-a_y = H;   
+a_y = 2*R;   
 % inverse kinematics
 [theta1,theta2] = inverse_2R(L1,L2,a_x,a_y);
 
@@ -111,18 +92,18 @@ q_old = [theta1;theta2;q_x;q_y;theta];
 % nu_old - generalized velocity vector at l, nu_old=[w_1o;w_2o;v_xo;v_yo;w_o]
 global nu_old;
 
-nu_old = [mp.w(1,initial_N);mp.w(2,initial_N);mp.svaj_curve(2,initial_N)*unit;0;0];
+nu_old = [0;0;0;0;0];
 
 
 %% defining the initial guess
 
 % Z - initial guess 
-V = [mp.w(1,initial_N+1);mp.w(2,initial_N+1);mp.svaj_curve(2,initial_N+1)*unit;0;0];
-P_nc = [F_23x(initial_N+1);-mp.mu(1)*abs(F_34y(initial_N+1))];
+V = [0;0;0;0;0];
+P_nc = [0;0];
 Ca = [0;0;0;0;0;0];
 SIG = [0;0];
-La = [0;1;0;0;0;0;0];
-P_c = [F_23y(initial_N+1);F_34y(initial_N+1)];
+La = [0;1;0;0;];
+P_c = [0;0];
 Z = [V;P_nc;Ca;SIG;La;P_c];
 
 % z - unknown variables at each time step
@@ -138,10 +119,10 @@ infty = 1e20;
 
 % l - lower bound 
 l(1:13,1) = -infty; 
-l(14:24,1) = 0;
+l(14:21,1) = 0;
 
 % u - upper bound
-u(1:24,1) = infty;
+u(1:21,1) = infty;
 
 % delta 
 delta = h*unit;
@@ -152,14 +133,14 @@ for i=initial_N:N-1
     
     tic
     
-    [z(:,i),f,J,mu,status] = pathmcp(Z,l,u,'mcp_funjac_2R_manipulator_block_simplified');
+    [z(:,i),f,J,mu,status] = pathmcp(Z,l,u,'mcp_funjac_2R_manipulator_circle_simplified');
     j = 1;
     while status == 0
         j = j+1;
         Z_initial = Z;
         R = rand;
         Z = Z_initial + (1+R)*delta*ones(length(Z),1);
-        [z(:,i),f,J,mu,status] = pathmcp(Z,l,u,'mcp_funjac_2R_manipulator_block_simplified');
+        [z(:,i),f,J,mu,status] = pathmcp(Z,l,u,'mcp_funjac_2R_manipulator_circle_simplified');
         if j>=10
             error('Path can not found the solution, change your initial guess');
         end
