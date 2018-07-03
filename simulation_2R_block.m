@@ -17,8 +17,8 @@ function [z,q] = simulation_2R_block(mp,initial_N)
 % 1. Provide the angular impulse on each joint
 % 2. Choose suitable time-step length
 % 3. Determine the configuration of box and 2R manipulator
-addpath(genpath('pathmexmaci64'));
-
+%addpath(genpath('pathmexmaci64'));
+addpath(genpath('pathmexw64')); % path of path solver windows
 %% input: 1)angular impulse on each joint, 2) applied impulse on box
 global tau_1 tau_2 p_x p_y p_z ;
 
@@ -31,12 +31,7 @@ F_12y = lp_sol(4,:);
 F_23x = lp_sol(5,:);
 F_23y = lp_sol(6,:);
 F_34y = lp_sol(7,:);
-
 F_34x_i = mp.mu(1)*(-sign(mp.svaj_curve(2,1)))*abs(F_34y(1));
-
-
-
-
 T1 = lp_sol(8,:);
 T2 = lp_sol(9,:);
 
