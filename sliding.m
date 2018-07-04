@@ -53,8 +53,8 @@ for i = 1:length(mp.pos)
         %simulation
         [z_d,q_d] = simulation_2R_block(cl_struct,initial_N,N);
         %update current position
-        q(:,:,counter) = q_d(:,3); %use the second step
-        z(:,counter) = z_d(:,3); %use the second step
+        q(:,:,counter) = q_d(:,1); %use the second step
+        z(:,counter) = z_d(:,1); %use the second step
         current_pos = q(3,1,counter);
         d_pos = abs(mp.pos(i) - current_pos)
         %planner
@@ -68,6 +68,7 @@ for i = 1:length(mp.pos)
         else
             time = mp.time(1) - mp.dt*(itr-1);
         end
+        %compute LP for each instance
         torques_1 = zeros(1,round(time/mp.dt)+1,N);
         torques_2 = zeros(1,round(time/mp.dt)+1,N);
         for k=1:N
@@ -79,6 +80,7 @@ for i = 1:length(mp.pos)
         end
         T1 = 0; %reset previous torques
         T2 = 0;
+        %sum torques
         for k=1:N
             T1 = T1 + torques_1(:,:,k);
             T2 = T2 + torques_2(:,:,k);
