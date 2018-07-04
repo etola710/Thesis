@@ -1,4 +1,4 @@
-function [z,q] = simulation_2R_block(mp,initial_N)
+function [z,q] = simulation_2R_block(mp,initial_N,N)
 %% notation
 % This is the simulation for underactuated manipulation in 2D between a 2R manipulator and a box.
 
@@ -23,7 +23,7 @@ addpath(genpath('pathmexw64')); % path of path solver windows
 global tau_1 tau_2 p_x p_y p_z ;
 
 unit = 1;
-lp_sol = cell2mat(mp.x)*unit^2;
+lp_sol = mp.lp*unit^2;
 F_14x = lp_sol(1,:);
 F_14y = lp_sol(2,:);
 F_12x = lp_sol(3,:);
@@ -51,7 +51,7 @@ global h;
 h = mp.dt;  % time-step length (second)
 
 % N - the number of iteration
-N= sum(mp.time)/h; 
+%N= sum(mp.time)/h; 
 
 %% defining the global variables
 
@@ -107,13 +107,13 @@ q_old = [theta1;theta2;q_x;q_y;theta];
 % nu_old - generalized velocity vector at l, nu_old=[w_1o;w_2o;v_xo;v_yo;w_o]
 global nu_old;
 
-nu_old = [mp.w(1,initial_N);mp.w(2,initial_N);mp.svaj_curve(2,initial_N)*unit;0;0];
+nu_old = [mp.w(1,initial_N+1);mp.w(2,initial_N+1);mp.svaj_curve(2,initial_N+1)*unit;0;0];
 
 
 %% defining the initial guess
 
 % Z - initial guess 
-V = [mp.w(1,initial_N+1);mp.w(2,initial_N+1);mp.svaj_curve(2,initial_N+1)*unit;0;0];
+V = [mp.w(1,initial_N);mp.w(2,initial_N);mp.svaj_curve(2,initial_N)*unit;0;0];
 P_nc = [m*g*h;m*g*h];
 Ca = [0;0;0;0;0;0];
 SIG = [0;0];
@@ -171,8 +171,8 @@ for i=initial_N:N
    nu_old = z(1:5,i); 
    q(:,i) = q_old;
    
-   tau_1 = T1(i+1); % joint 1 (N.s)
-   tau_2 = T2(i+1); % joint 2 (N.s)
+   tau_1 = T1(i); % joint 1 (N.s)
+   tau_2 = T2(i); % joint 2 (N.s)
    
    %figure_plot_sliding(q,i,L,L1,L2,H);
 end

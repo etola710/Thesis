@@ -7,58 +7,72 @@ Path 4.7.03 (Wed Nov 21 16:35:11 2012)
 Written by Todd Munson, Steven Dirkse, and Michael Ferris
 
 INITIAL POINT STATISTICS
-Zero column of order. . . . . .  0.0000e+000 var: (x[   17])
 Zero row of order . . . . . . .  0.0000e+000 eqn: (f[   17])
-Total zero columns. . . . . . .  1
 Total zero rows . . . . . . . .  1
-Maximum of X. . . . . . . . . .  1.0000e+000 var: (x[   21])
-Maximum of F. . . . . . . . . .  3.0000e-002 eqn: (f[   19])
-Maximum of Grad F . . . . . . .  1.0000e+000 eqn: (f[    5])
-                                            var: (x[    5])
+Maximum of X. . . . . . . . . .  1.5282e+002 var: (x[    1])
+Maximum of F. . . . . . . . . .  2.9552e+000 eqn: (f[    6])
+Maximum of Grad F . . . . . . .  1.9596e+001 eqn: (f[    6])
+                                            var: (x[   23])
 
 INITIAL JACOBIAN NORM STATISTICS
-Maximum Row Norm. . . . . . . .  3.0000e+000 eqn: (f[   11])
-Minimum Row Norm. . . . . . . .  1.1160e-003 eqn: (f[    7])
-Maximum Column Norm . . . . . .  4.0000e+000 var: (x[   13])
-Minimum Column Norm . . . . . .  5.5560e-004 var: (x[   15])
+Maximum Row Norm. . . . . . . .  2.5220e+001 eqn: (f[    6])
+Minimum Row Norm. . . . . . . .  1.1339e-002 eqn: (f[   23])
+Maximum Column Norm . . . . . .  2.0808e+001 var: (x[   23])
+Minimum Column Norm . . . . . .  7.0346e-003 var: (x[    2])
 
 Crash Log
 major  func  diff  size  residual    step       prox   (label)
-    0     0             1.3333e-006             0.0e+000 (f[    8])
-    1     1     3    19 4.2626e-007  1.0e+000    1.3e-008 (f[    5])
+    0     0             3.0370e+000             0.0e+000 (f[    6])
+    1     6     0    24 1.3725e+000  1.7e-001    3.0e-002 (f[   14])
 pn_search terminated: no basis change.
 
 Major Iteration Log
 major minor  func  grad  residual    step  type prox    inorm  (label)
-    0     0     2     2 4.2626e-007           I 4.3e-009 4.2e-007 (f[    5])
+    0     0     7     2 1.3725e+000           I 1.4e-002 9.2e-001 (f[   14])
+    1     5    16     3 1.4894e+000  2.3e-002 SB 5.5e-003 9.2e-001 (f[    7])
+    2     8    25     4 2.7840e+000  2.3e-002 SB 2.2e-003 2.5e+000 (f[    6])
+    3     9    34     5 4.8115e+000  2.3e-002 SB 8.8e-004 4.5e+000 (f[    6])
+    4    10    43     6 5.8710e+000  2.3e-002 SB 3.5e-004 5.1e+000 (f[    6])
+    5     8    53     7 5.9899e+000  9.2e-003 SB 1.4e-004 5.0e+000 (f[    6])
+    6     9    63     8 6.0613e+000  9.2e-003 SB 5.6e-005 5.0e+000 (f[    6])
+    7     9    73     9 6.1065e+000  9.2e-003 SB 2.2e-005 5.0e+000 (f[    6])
+    8     9    83    10 6.1337e+000  9.2e-003 SB 9.0e-006 5.0e+000 (f[    6])
+    9     9    89    11 5.6556e+000  2.1e-001 SB 3.6e-006 4.1e+000 (f[   14])
+   10     7    95    12 4.7969e+000  2.1e-001 SB 1.4e-006 3.6e+000 (f[   14])
+   11     6    96    13 2.5401e+001  1.0e+000 SD 5.8e-007 2.5e+001 (f[    6])
+   12     2    97    14 3.0113e+001  1.0e+000 SD 2.3e-007 3.0e+001 (f[    6])
+   13     1    98    15 4.2550e+000  1.0e+000 SO 9.2e-008 4.2e+000 (f[    6])
+   14     2    99    16 1.0496e-002  1.0e+000 SO 3.7e-008 7.4e-003 (f[    6])
+   15     1   100    17 5.3979e-004  1.0e+000 SO 1.5e-008 5.4e-004 (f[    5])
+   16     1   101    18 2.1742e-007  1.0e+000 SO 5.9e-009 2.2e-007 (f[    5])
 
 FINAL STATISTICS
-Inf-Norm of Complementarity . .  4.2444e-007 eqn: (f[    5])
-Inf-Norm of Normal Map. . . . .  4.2444e-007 eqn: (f[    5])
-Inf-Norm of Minimum Map . . . .  4.2444e-007 eqn: (f[    5])
-Inf-Norm of Fischer Function. .  4.2444e-007 eqn: (f[    5])
-Inf-Norm of Grad Fischer Fcn. .  4.2444e-007 eqn: (f[    5])
-Two-Norm of Grad Fischer Fcn. .  4.2620e-007
+Inf-Norm of Complementarity . .  2.1742e-007 eqn: (f[    5])
+Inf-Norm of Normal Map. . . . .  2.1742e-007 eqn: (f[    5])
+Inf-Norm of Minimum Map . . . .  2.1742e-007 eqn: (f[    5])
+Inf-Norm of Fischer Function. .  2.1742e-007 eqn: (f[    5])
+Inf-Norm of Grad Fischer Fcn. .  1.8493e-006 eqn: (f[   10])
+Two-Norm of Grad Fischer Fcn. .  2.6403e-006
 
 FINAL POINT STATISTICS
-Zero column of order. . . . . .  3.7637e-013 var: (x[   17])
+Zero column of order. . . . . .  0.0000e+000 var: (x[   17])
 Zero row of order . . . . . . .  0.0000e+000 eqn: (f[   17])
 Total zero columns. . . . . . .  1
 Total zero rows . . . . . . . .  1
-Maximum of X. . . . . . . . . .  1.0000e+000 var: (x[   21])
-Maximum of F. . . . . . . . . .  3.0000e-002 eqn: (f[   19])
-Maximum of Grad F . . . . . . .  1.0000e+000 eqn: (f[    5])
-                                            var: (x[    5])
+Maximum of X. . . . . . . . . .  1.1753e+002 var: (x[    2])
+Maximum of F. . . . . . . . . .  5.7414e+001 eqn: (f[   14])
+Maximum of Grad F . . . . . . .  1.3771e+001 eqn: (f[   14])
+                                            var: (x[   23])
 
  ** EXIT - solution found.
 
-Major Iterations. . . . 0
-Minor Iterations. . . . 0
+Major Iterations. . . . 16
+Minor Iterations. . . . 96
 Restarts. . . . . . . . 0
 Crash Iterations. . . . 1
 Gradient Steps. . . . . 0
-Function Evaluations. . 2
-Gradient Evaluations. . 2
-Basis Time. . . . . . . 0.000000
-Total Time. . . . . . . 0.003000
-Residual. . . . . . . . 4.262635e-007
+Function Evaluations. . 101
+Gradient Evaluations. . 18
+Basis Time. . . . . . . 0.001000
+Total Time. . . . . . . 0.030000
+Residual. . . . . . . . 2.174241e-007

@@ -103,13 +103,13 @@ nu_old = [mp.w(1,initial_N);mp.w(2,initial_N);mp.svaj_curve(2,initial_N)*unit;0;
 %% defining the initial guess
 
 % Z - initial guess
-V1 = [mp.w(1,initial_N+1);mp.w(2,initial_N+1);mp.svaj_curve(2,initial_N+1)*unit;0;0]; %**
+V = [mp.w(1,initial_N+1);mp.w(2,initial_N+1);mp.svaj_curve(2,initial_N+1)*unit;0;0]; %**
 P_nc1 = [m*g*h;m*g*h];
 Ca1 = [0;0;0;0;0;0];
 SIG1 = [0;0];
 La1 = [0;1;0;0;0;0;0];
 P_c1 = [0;0.0065];
-Z = [V1;P_nc1;Ca1;SIG1;La1;P_c1];
+Z = [V;P_nc1;Ca1;SIG1;La1;P_c1];
 
 % z - unknown variables at each time step
 z=zeros(length(Z),N);
@@ -163,8 +163,12 @@ r3_mag = sqrt((mp.p_con(1)^2+(mp.dim(1)/2)^2));
 
 %% the Path solver
 for i=initial_N:N
-    
     tic
+    link_lengths = [L1 L2];
+    mass = [m1 m2 m];
+    time_steps = [
+    mp = sliding_fun(link_lengths,mass,time_steps,object_x_positions,contact_point,object_dimensions,dt,friction_coeffs);
+    
     for k=1:2
         %perform dynamic simulation for two steps
         [z_cl(:,k),f,J,mu,status] = pathmcp(Z,l,u,'mcp_funjac_2R_manipulator_block_simplified');
