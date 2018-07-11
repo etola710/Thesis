@@ -41,13 +41,10 @@ global h;
 h = mp.dt;  % time-step length (second)
 
 % N - the number of iteration
-N= sum(mp.time)/h;
-<<<<<<< HEAD
-global N_step
-N = N_step;
-=======
+%N= sum(mp.time)/h;
+N = 50;
 
->>>>>>> 4874f67a38f0c7cd71d32191a96b16d913acfc25
+
 %% defining the global variables
 
 global I_z1 I_z2 m1 m2 L1 L2 r1 r2 m I_z L H g muRB  muBG eRB_t eBG_t ;
@@ -88,7 +85,6 @@ theta = 0;   % orientation of the box
 %           2) using inverse kinematics to determine theta1 and theta2
 
 % assuming tip lies on the perimeter of the box
-d = 0.5; % 0<= d <= 1 related position of tip on the top side of the box
 a_x = q_x;
 a_y = H;
 % inverse kinematics
@@ -134,11 +130,9 @@ l(14:24,1) = 0;
 u(1:24,1) = infty;
 
 % delta
-<<<<<<< HEAD
-delta = 2e-1*unit;
-=======
+
 delta = 1e-1*unit;
->>>>>>> 4874f67a38f0c7cd71d32191a96b16d913acfc25
+
 
 %closed loop
 cl_struct(1:2) = mp; %structure array
@@ -172,6 +166,8 @@ r3_mag = sqrt((mp.p_con(1)^2+(mp.dim(1)/2)^2));
 
 %% the Path solver
 for i=initial_N:N
+    q_save = q_old;
+    nu_save = nu_old;
     
     tic
     for k=1:2
@@ -193,14 +189,11 @@ for i=initial_N:N
         %simulation steps
         q_vec = q_old; %previous
         nu_vec = nu_old; %previous
-<<<<<<< HEAD
+
         q_old = q_old + h*z_cl(1:5,k); %next
         nu_old = z_cl(1:5,k); %next
-=======
-        q_old = q_old + h*z(1:5,k); %next
-        nu_old = z(1:5,k); %next
->>>>>>> 4874f67a38f0c7cd71d32191a96b16d913acfc25
-        q_cl(:,:,k) = q_old;
+
+        q_cl(:,k) = q_old;
         Z = z_cl(:,k);
         [~, cg_pos_old] = DK_2R(mp.links,[q_vec(1),q_vec(2)]);
         [joints, cg_pos_new] = DK_2R(mp.links,[q_cl(1,k),q_cl(2,k)]);
@@ -251,12 +244,29 @@ for i=initial_N:N
     lp_2 = cell2mat(cl_struct(2).x);
     torque_1 = (lp_1(8)+lp_2(8))/2; %average T1
     torque_2 = (lp_1(9)+lp_2(9))/2; %average T2
-    z(:,i) = z_cl(:,2);
-    Z = z(:,i); % updating the initial guess for each iteration
-    toc
-    q_old = q_old + h*z(1:5,i);
-    nu_old = z(1:5,i);
-    q(:,i) = q_old;
+    
     tau_1 = torque_1; % joint 1 (N.s) **torques to be updated each step
     tau_2 = torque_2; % joint 2 (N.s)
+    q_old = q_save;
+    nu_old = nu_save;
+    [z(:,i),f,J,mu,status] = pathmcp(Z,l,u,'mcp_funjac_2R_manipulator_block_simplified');
+        j = 1;
+        while status == 0
+            j = j+1;
+            Z_initial = Z;
+            R = rand;
+            Z = Z_initial + (1+R)*delta*ones(length(Z),1);
+            [z(:,i),f,J,mu,status] = pathmcp(Z,l,u,'mcp_funjac_2R_manipulator_block_simplified');
+            if j>=10
+                error('Path can not found the solution, change your initial guess');
+            end
+        end
+    Z = z(:,i); % updating the initial guess for each iteration
+    toc
+   
+    q_old = q_old + h*z(1:5,i);
+ 
+    nu_old = z(1:5,i);
+    q(:,i) = q_old;
+    
 end

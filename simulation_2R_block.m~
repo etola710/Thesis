@@ -37,8 +37,8 @@ T2 = lp_sol(9,:)*unit;
 
 
 % 2R manipulator
-tau_1 = (T1(initial_N+1)+T1(initial_N+1))/2; % joint 1 (N.s)
-tau_2 = (T2(initial_N+1)+T2(initial_N+1))/2; % joint 2 (N.s)
+tau_1 = (T1(initial_N+1)+T1(initial_N))/2; % joint 1 (N.s)
+tau_2 = (T2(initial_N+1)+T2(initial_N))/2; % joint 2 (N.s)
 
 % box
 p_x = 0; % applied impulse along x axis
@@ -171,8 +171,8 @@ for i=initial_N:N
    nu_old = z(1:5,i); 
    q(:,i) = q_old;
    
-   tau_1 = (T1(i+2)+T1(i+2))/2; % joint 1 (N.s)
-   tau_2 = (T2(i+2)+T2(i+2))/2; % joint 2 (N.s)
+   tau_1 = T1(i+2); % joint 1 (N.s)
+   tau_2 = (T2(i+1)+T2(i+2))/2; % joint 2 (N.s)
    
    mp.theta(1,i+1) = mp.theta(1,i) +h*mp.w(1,i+1);
    mp.theta(2,i+1) = mp.theta(2,i) +h*mp.w(2,i+1);

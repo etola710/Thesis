@@ -4,11 +4,9 @@ close all
 %Sliding Motion
 addpath(genpath('instantaneous_mechanism_method'));
 %addpath(genpath('pathmexmaci64')); % path of path solver mac
-<<<<<<< HEAD
+
 addpath(genpath('pathmexmaci64')); % path of path solver windows
-=======
-addpath(genpath('pathmexw64')); % path of path solver windows
->>>>>>> 4874f67a38f0c7cd71d32191a96b16d913acfc25
+
 mp = struct();
 %finger dimensions
 mp.links = [.08 .05]; %m
@@ -25,7 +23,7 @@ mp.g_dir = 3*pi/2;
 mp.g_force = [mp.g_acc*cos(mp.g_dir) mp.g_acc*sin(mp.g_dir)]; %Fg_x Fg_y
 %motion primitive
 mp.time = [.5 .5 .5]; %s time for each step
-mp.pos = [.05 .1 .05 .1]; %m x coordinate [inital, ..., final]
+mp.pos = [.05 .08 .05 .08]; %m x coordinate [inital, ..., final]
 mp.p_con = [0 ; mp.dim(1)]; %contact point x y wrt object
 %generate sliding motion plan
 mp = sliding_motion(mp);
@@ -39,34 +37,29 @@ mp.lp = cell2mat(mp.x);
 mp.filename ='sliding.gif';
 mp.gif_fps=10;
 %sliding_plot(mp);
-
+mp.unit = 1000;
 
 
 %% simulation validation
 % z - variables contains the state of the system and lagrange variables
 % q - configuration of the system
-<<<<<<< HEAD
 
-% initial_N = 10; % initial time to simulate
-% [z,q] = simulation_2R_block(mp,initial_N);
+
+
 
 %% compare the result from planning algorithm and simulator
-global N_step % length of step decide to plot
- N_step = 50;
+
+N =52;
 initial_N = 1; % initial time to simulate
-[z,q] = simulation_2R_block_cl(mp,initial_N);
+[z,q,mp] = simulation_2R_block(mp,initial_N,N);
 
 %% compare the result from planning algorithm and simulator
+N_step = N-2; % length of step decide to plot
 
-=======
-initial_N = 1; % initial time to simulate
-[z,q] = simulation_2R_block_cl(mp,initial_N);
-
-%% compare the result from planning algorithm and simulator
-N_step = 150; % length of step decide to plot
->>>>>>> 4874f67a38f0c7cd71d32191a96b16d913acfc25
-comp_plot_contactRB(z,mp,N_step) % F23
-comp_plot_contactBG(z,mp,N_step) % F34
-comp_plot_w_2R(z,mp,N_step) % w1 and w2
+%comp_plot_contactRB(z,mp,N_step) % F23
+%comp_plot_contactBG(z,mp,N_step) % F34
+%comp_plot_w_2R(z,mp,N_step) % w1 and w2
+comp_plot_theta_2R(q,mp,N_step) % theta1 and theta2
 comp_plot_positionBlock(q,z,mp,N_step)
-plot_torque(mp,N_step)
+%plot_torque(mp,N_step)
+comp_plot_aRB(mp,q,N)

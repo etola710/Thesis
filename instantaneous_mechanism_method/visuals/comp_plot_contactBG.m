@@ -17,20 +17,20 @@ for i=1:length(lp_sol)
     F_34x(i) = mp.mu(1)*(-sign(mp.svaj_curve(2,i)))*abs(F_34y(i));
 end
 
-F_34y_s = [0,z(24,:)]/h;
+F_34y_s = [0,z(23,:)]/h;
 F_34x_s = [0,z(7,:)]/h;
 
 
 T = mp.tp(1:N);
 figure
 subplot(2,1,1)
-plot(T,F_34x(1:N),T,F_34x_s(1:N))
+plot(T,F_34x(1:N)*mp.unit,T,F_34x_s(1:N))
 xlabel('Time s')
 ylabel('F_{34x} N')
 legend('F_{34x}','F_{34x_s}')
 grid on
 subplot(2,1,2)
-plot(T,F_34y(1:N),T,F_34y_s(1:N))
+plot(T,F_34y(1:N)*mp.unit,T,F_34y_s(1:N))
 xlabel('Time s')
 ylabel('F_{34y} N')
 legend('F_{34y}','F_{34y_s}')
