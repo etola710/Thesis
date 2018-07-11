@@ -1,4 +1,6 @@
+
 function [z,q,mp] = simulation_2R_block(mp,initial_N,N)
+
 %% notation
 % This is the simulation for underactuated manipulation in 2D between a 2R manipulator and a box.
 
@@ -22,8 +24,10 @@ addpath(genpath('pathmexw64')); % path of path solver windows
 %% input: 1)angular impulse on each joint, 2) applied impulse on box
 global tau_1 tau_2 p_x p_y p_z ;
 
+
 unit = mp.unit;
 lp_sol = mp.lp*unit;
+
 F_14x = lp_sol(1,:);
 F_14y = lp_sol(2,:);
 F_12x = lp_sol(3,:);
@@ -106,15 +110,17 @@ q_old = [theta1;theta2;q_x;q_y;theta];
 % nu_old - generalized velocity vector at l, nu_old=[w_1o;w_2o;v_xo;v_yo;w_o]
 global nu_old;
 
-nu_old = [mp.w(1,initial_N);mp.w(2,initial_N);mp.svaj_curve(2,initial_N)*unit;0;0];
+nu_old = [mp.w(1,initial_N+1);mp.w(2,initial_N+1);mp.svaj_curve(2,initial_N+1)*unit;0;0];
 
 mp.theta(1,1) = theta1 +nu_old(1)*h;
 mp.theta(2,1) = theta2 +nu_old(2)*h;
 %% defining the initial guess
 
 % Z - initial guess 
+
 V = [mp.w(1,initial_N+1);mp.w(2,initial_N+1);mp.svaj_curve(2,initial_N+1)*unit;0;0];
 P_nc = [F_23x(initial_N+1);F_34x_i(initial_N+1)];
+
 Ca = [0;0;0;0;0;0];
 SIG = [0;0];
 La = [0;0;0;0;1;0];
@@ -171,8 +177,10 @@ for i=initial_N:N
    nu_old = z(1:5,i); 
    q(:,i) = q_old;
    
+
    tau_1 = (T1(i+2)+T1(i+2))/2; % joint 1 (N.s)
    tau_2 = (T2(i+2)+T2(i+2))/2; % joint 2 (N.s)
+
    
    mp.theta(1,i+1) = mp.theta(1,i) +h*mp.w(1,i+1);
    mp.theta(2,i+1) = mp.theta(2,i) +h*mp.w(2,i+1);

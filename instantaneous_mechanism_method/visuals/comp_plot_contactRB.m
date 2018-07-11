@@ -1,19 +1,12 @@
 function comp_plot_contactRB(z,mp,N)
-lp_sol = cell2mat(mp.x);
-F_14x = lp_sol(1,:);
-F_14y = lp_sol(2,:);
-F_12x = lp_sol(3,:);
-F_12y = lp_sol(4,:);
-F_23x = lp_sol(5,:);
-F_23y = lp_sol(6,:);
-F_34y = lp_sol(7,:);
-T1 = lp_sol(8,:);
-T2 = lp_sol(9,:);
+lp = cell2mat(mp.x);
+
 
 h = mp.dt;
 
 F_23y_s = [0,z(22,:)]/h;
 F_23x_s = [0,z(6,:)]/h;
+
 
 
 T = mp.tp(1:N);

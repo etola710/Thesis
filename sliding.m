@@ -34,9 +34,10 @@ mp.fval=1:length(mp.svaj_curve);
 mp = lp_dynamics_sliding(mp);
 mp.lp = cell2mat(mp.x);
 %mp = torque_plot_s(mp);
-mp.filename ='sliding.gif';
-mp.gif_fps=10;
+%mp.filename ='sliding.gif';
+%mp.gif_fps=10;
 %sliding_plot(mp);
+
 mp.unit = 1000;
 
 
@@ -63,3 +64,10 @@ comp_plot_theta_2R(q,mp,N_step) % theta1 and theta2
 comp_plot_positionBlock(q,z,mp,N_step)
 %plot_torque(mp,N_step)
 comp_plot_aRB(mp,q,N)
+
+%% simulation validation
+% z - variables contains the state of the system and lagrange variables
+% q - configuration of the system
+%mp = simulationloopsliding(mp);
+%simulationloopplot(mp)
+
