@@ -1,10 +1,10 @@
 function comp_plot_positionBlock(q,z,mp,N)
 
 T = mp.tp(1:N);
-q_x = mp.svaj_curve(1,:);
+q_x = mp.svaj_curve(1,:)*mp.unit;
 q_x_s = [0,q(3,:)];
 
-v_x = mp.svaj_curve(2,:);
+v_x = mp.svaj_curve(2,:)*mp.unit;
 v_x_s = [0,z(3,:)];
 
 figure

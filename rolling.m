@@ -24,16 +24,22 @@ mp.pos = [.08 .075]; %m x positions
 mp.p_con=[mp.pos(1), mp.dim]; %m contact point
 %generate rolling motion plan
 mp=rolling_motion(mp);
-svaj_plot(mp);
+%svaj_plot(mp);
 %lp dynamics
 mp.x=cell(1,length(mp.svaj_curve));
 mp.fval=1:length(mp.svaj_curve);
 mp = lp_dynamics_rolling(mp);%linear solution
 %mp = dynamics_rolling(mp); %direct solution
 mp.lp = cell2mat(mp.x);
-mp = torque_plot_r(mp); %linear program
+%mp = torque_plot_r(mp); %linear program
 %mp = torque_plot_rd(mp); %direct solution
-mp.filename = 'rolling.gif';
-mp.gif_fps = 10;
-rolling_plot(mp); %linear program
+%mp.filename = 'rolling.gif';
+%mp.gif_fps = 10;
+%rolling_plot(mp); %linear program
 %rolling_plot_d(mp); %direct solution
+
+%% simulation validation
+% z - variables contains the state of the system and lagrange variables
+% q - configuration of the system
+initial_N = 1; % initial time to simulate
+[z,q] = simulation_2R_circle(mp,initial_N);

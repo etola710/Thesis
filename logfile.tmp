@@ -1,68 +1,9 @@
 Path 4.7.03: Matlab Link
-24 row/cols, 576 non-zeros, 100.00% dense.
+23 row/cols, 529 non-zeros, 100.00% dense.
 
 Could not open options file: path.opt
 Using defaults.
-Path 4.7.03 (Wed Nov 21 16:35:11 2012)
+Path 4.7.03 (Fri Feb 10 15:00:24 2012)
 Written by Todd Munson, Steven Dirkse, and Michael Ferris
 
-INITIAL POINT STATISTICS
-Zero column of order. . . . . .  1.1126e-013 var: (x[   17])
-Zero row of order . . . . . . .  0.0000e+000 eqn: (f[   17])
-Total zero columns. . . . . . .  1
-Total zero rows . . . . . . . .  1
-Maximum of X. . . . . . . . . .  1.7916e+000 var: (x[    2])
-Maximum of F. . . . . . . . . .  3.1903e-002 eqn: (f[   20])
-Maximum of Grad F . . . . . . .  1.0000e+000 eqn: (f[    5])
-                                            var: (x[    5])
 
-INITIAL JACOBIAN NORM STATISTICS
-Maximum Row Norm. . . . . . . .  3.0000e+000 eqn: (f[   11])
-Minimum Row Norm. . . . . . . .  2.1491e-003 eqn: (f[   15])
-Maximum Column Norm . . . . . .  4.0000e+000 var: (x[   13])
-Minimum Column Norm . . . . . .  1.1126e-013 var: (x[   17])
-
-Crash Log
-major  func  diff  size  residual    step       prox   (label)
-    0     0             3.6047e-003             0.0e+000 (f[    3])
-    1     1     2    20 5.8983e-005  1.0e+000    3.6e-005 (f[    2])
-pn_search terminated: no basis change.
-
-Major Iteration Log
-major minor  func  grad  residual    step  type prox    inorm  (label)
-    0     0     2     2 5.8983e-005           I 5.9e-007 5.4e-005 (f[    2])
-    1     2     3     3 3.1100e-005  1.0e+000 SO 2.4e-007 3.1e-005 (f[    5])
-    2     1     4     4 1.3159e-005  1.0e+000 SO 9.4e-008 9.2e-006 (f[    5])
-    3     1     5     5 1.0541e-006  1.0e+000 SO 3.8e-008 1.0e-006 (f[    5])
-    4     1     6     6 2.6151e-008  1.0e+000 SO 1.5e-008 2.6e-008 (f[    5])
-
-FINAL STATISTICS
-Inf-Norm of Complementarity . .  2.6149e-008 eqn: (f[    5])
-Inf-Norm of Normal Map. . . . .  2.6149e-008 eqn: (f[    5])
-Inf-Norm of Minimum Map . . . .  2.6149e-008 eqn: (f[    5])
-Inf-Norm of Fischer Function. .  2.6149e-008 eqn: (f[    5])
-Inf-Norm of Grad Fischer Fcn. .  2.6149e-008 eqn: (f[    5])
-Two-Norm of Grad Fischer Fcn. .  2.6154e-008
-
-FINAL POINT STATISTICS
-Zero column of order. . . . . .  5.3696e-014 var: (x[   17])
-Zero row of order . . . . . . .  0.0000e+000 eqn: (f[   17])
-Total zero columns. . . . . . .  1
-Total zero rows . . . . . . . .  1
-Maximum of X. . . . . . . . . .  3.2801e+000 var: (x[    2])
-Maximum of F. . . . . . . . . .  3.0249e-002 eqn: (f[   20])
-Maximum of Grad F . . . . . . .  1.0000e+000 eqn: (f[    5])
-                                            var: (x[    5])
-
- ** EXIT - solution found.
-
-Major Iterations. . . . 4
-Minor Iterations. . . . 5
-Restarts. . . . . . . . 0
-Crash Iterations. . . . 1
-Gradient Steps. . . . . 0
-Function Evaluations. . 6
-Gradient Evaluations. . 6
-Basis Time. . . . . . . 0.001000
-Total Time. . . . . . . 0.005000
-Residual. . . . . . . . 2.615068e-008

@@ -4,7 +4,9 @@ close all
 %Sliding Motion
 addpath(genpath('instantaneous_mechanism_method'));
 %addpath(genpath('pathmexmaci64')); % path of path solver mac
-addpath(genpath('pathmexw64')); % path of path solver windows
+
+addpath(genpath('pathmexmaci64')); % path of path solver windows
+
 mp = struct();
 %finger dimensions
 mp.links = [.08 .05]; %m
@@ -35,8 +37,37 @@ mp.lp = cell2mat(mp.x);
 %mp.filename ='sliding.gif';
 %mp.gif_fps=10;
 %sliding_plot(mp);
+
+mp.unit = 1000;
+
+
 %% simulation validation
 % z - variables contains the state of the system and lagrange variables
 % q - configuration of the system
-mp = simulationloopsliding(mp);
-simulationloopplot(mp)
+
+
+
+
+%% compare the result from planning algorithm and simulator
+
+N =52;
+initial_N = 1; % initial time to simulate
+[z,q,mp] = simulation_2R_block(mp,initial_N,N);
+
+%% compare the result from planning algorithm and simulator
+N_step = N-2; % length of step decide to plot
+
+%comp_plot_contactRB(z,mp,N_step) % F23
+%comp_plot_contactBG(z,mp,N_step) % F34
+%comp_plot_w_2R(z,mp,N_step) % w1 and w2
+comp_plot_theta_2R(q,mp,N_step) % theta1 and theta2
+comp_plot_positionBlock(q,z,mp,N_step)
+%plot_torque(mp,N_step)
+comp_plot_aRB(mp,q,N)
+
+%% simulation validation
+% z - variables contains the state of the system and lagrange variables
+% q - configuration of the system
+%mp = simulationloopsliding(mp);
+%simulationloopplot(mp)
+
