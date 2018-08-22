@@ -90,4 +90,5 @@ mp.w = w;
 mp.dirs = dirs;
 mp.po_cg = po_cg;
 mp.p_c=p_c;
+mp.finger_theta = [th1 ; th2];
 end

@@ -5,8 +5,8 @@ if abs(x) > (l1+l2) || abs(y) > (l1+l2)
     error('Invalid end effector cooridinates. Manipulator cannot reach desired position.')
 end
 c2=((x^2+y^2-l1^2-l2^2)/(2*l1*l2));
-s2_p=sqrt((1-c2^2));
-s2_n=-sqrt((1-c2^2));
+s2_p=sqrt((1-(c2^2)));
+s2_n=-sqrt((1-(c2^2)));
 T2=[atan2(s2_n,c2),atan2(s2_p,c2)];
 k1=l1+l2*c2;
 k2_p=l2*s2_p;

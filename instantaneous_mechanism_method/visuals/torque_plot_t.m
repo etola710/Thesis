@@ -1,5 +1,5 @@
 function mp = torque_plot_t(mp)
-%x = [F14x F14y F12x F12y F23y F34y T1 T2] 1x9
+%x = [F14x F14y F12x F12y F23y F34x F34y T1 T2] 1x10
 lp_sol = mp.lp;
 F_14x = lp_sol(1,:);
 F_14y = lp_sol(2,:);
@@ -132,18 +132,18 @@ legend('a_{x2}', 'a_{y2}')
 grid on
 figure
 subplot(3,1,1)
-plot(mp.tp,mp.theta)
+plot(mp.tp,mp.svaj_curve(1,:))
 xlabel('Time s')
 ylabel('\theta rad')
 grid on
 subplot(3,1,2)
-plot(mp.tp,mp.w(1,:),mp.tp,mp.w(2,:),mp.tp,mp.w(3,:))
+plot(mp.tp,mp.w(1,:),mp.tp,mp.w(2,:),mp.tp,mp.svaj_curve(2,:))
 xlabel('Time s')
 ylabel('\omega rad/s')
 legend('\omega_1', '\omega_2', '\omega_3')
 grid on
 subplot(3,1,3)
-plot(mp.tp,mp.alpha(1,:),mp.tp,mp.alpha(2,:),mp.tp,mp.alpha(3,:))
+plot(mp.tp,mp.alpha(1,:),mp.tp,mp.alpha(2,:),mp.tp,mp.svaj_curve(3,:))
 xlabel('Time s')
 ylabel('\alpha rad/s^2')
 legend('\alpha_1' , '\alpha_2', '\alpha_3')

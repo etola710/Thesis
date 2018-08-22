@@ -1,4 +1,4 @@
-
+clear all
 %% notation
 % This is the simulation for underactuated manipulation in 2D between a 2R manipulator and a box.
 
@@ -34,10 +34,10 @@ p_z = 0; % angular impulse about z axis
 
 %% time-step length
 global h;
-h = mp.dt;  % time-step length (second)
+h = 0.01;  % time-step length (second)
 
 % N - the number of iteration
-N= sum(mp.time)/h; 
+N= 1; 
 
 %% defining the global variables
 
@@ -56,9 +56,9 @@ I_z2 = 1; % moment of inertia of bar 2
 
 m = 1; % mass of the box
 I_z = 1; % moment of inertia about z axis
-R = 1; % radius of the circle
+R = 0.5; % radius of the circle
 
-g = mp.g_acc*unit; % acceleration due to gravity (m/s^2)
+g = 9.8; % acceleration due to gravity (m/s^2)
 muRB = 0.9; % coefficient of friction between the tip and circle
 muBG = 0.1; % coefficient of friction between the box and ground
 eRB_t = 1; 
@@ -125,11 +125,11 @@ l(14:21,1) = 0;
 u(1:21,1) = infty;
 
 % delta 
-delta = h*unit;
+delta = h;
 
 
 %% the Path solver
-for i=initial_N:N-1 
+for i=1:N
     
     tic
     
@@ -156,8 +156,8 @@ for i=initial_N:N-1
    nu_old = z(1:5,i); 
    q(:,i) = q_old;
    
-   tau_1 = (T1(i+1)+T1(i+1))/2; % joint 1 (N.s)
-   tau_2 = (T2(i+1)+T2(i+1))/2; % joint 2 (N.s)
+   tau_1 =0; % joint 1 (N.s)
+   tau_2 = 0; % joint 2 (N.s)
    
    %figure_plot_sliding(q,i,L,L1,L2,H);
 end

@@ -21,21 +21,21 @@ mp.g_force = [mp.g_acc*cos(mp.g_dir) mp.g_acc*sin(mp.g_dir)]; %Fg_x Fg_y
 %motion prmitive
 mp.time = [.5]; %s time for motion
 mp.pos = [.08 .075]; %m x positions
-mp.p_con=[mp.pos(1), mp.dim]; %m contact point
+mp.p_con = [mp.dim*cos(pi/2);mp.dim*sin(pi/2)]; %contact point at top of circle
 %generate rolling motion plan
 mp=rolling_motion(mp);
 %svaj_plot(mp);
 %lp dynamics
 mp.x=cell(1,length(mp.svaj_curve));
 mp.fval=1:length(mp.svaj_curve);
-mp = lp_dynamics_rolling(mp);%linear solution
+mp = lp_dynamics_rolling(mp);%linear program solution
 %mp = dynamics_rolling(mp); %direct solution
 mp.lp = cell2mat(mp.x);
 %mp = torque_plot_r(mp); %linear program
 %mp = torque_plot_rd(mp); %direct solution
-%mp.filename = 'rolling.gif';
-%mp.gif_fps = 10;
-%rolling_plot(mp); %linear program
+mp.filename = 'rolling.gif';
+mp.gif_fps = 10;
+rolling_plot(mp); %linear program solution
 %rolling_plot_d(mp); %direct solution
 
 %% simulation validation

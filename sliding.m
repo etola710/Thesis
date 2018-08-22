@@ -3,9 +3,7 @@ close all
 %% Planning algorithm
 %Sliding Motion
 addpath(genpath('instantaneous_mechanism_method'));
-%addpath(genpath('pathmexmaci64')); % path of path solver mac
-
-addpath(genpath('pathmexmaci64')); % path of path solver windows
+addpath(genpath('pathmex')); % path of path solver
 
 mp = struct();
 %finger dimensions

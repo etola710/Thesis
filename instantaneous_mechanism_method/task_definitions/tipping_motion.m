@@ -1,6 +1,8 @@
 function mp = tipping_motion(mp)
 mp = motion_generation(mp);
-s=mp.svaj_curve(1,:); %theta
+s=mp.svaj_curve(1,:); %radians
+w=mp.svaj_curve(2,:); %radians/s
+a=mp.svaj_curve(3,:); %radians/s^2
 x_cg=zeros(2,length(s));
 y_cg=zeros(2,length(s));
 v_cg=zeros(2,length(s));
@@ -15,12 +17,13 @@ w = zeros(2,length(s));
 alpha = zeros(2,length(s));
 th1=zeros(1,length(s));
 th2=zeros(1,length(s));
+th3=zeros(1,length(s));
 dirs=zeros(6,length(s));
 xbox = zeros(4,length(s));
 ybox = zeros(4,length(s));
 r1_mag = mp.links(1)/2;
 r2_mag = mp.links(2)/2;
-r3_mag = sqrt((mp.p_con(1)^2+(mp.dim(1)/2)^2));
+r3_mag = sqrt((mp.p_con(1)^2+(mp.dim(1)/2)^2)); %%%
 
 r_14=zeros(2,length(s));
 r_12=zeros(2,length(s));
@@ -32,26 +35,18 @@ r_34=zeros(2,length(s));
 %object
 %{\
 po_cg=zeros(2,length(s)); %object center position wrt W
-p_c=zeros(2,length(s)); %contact position wrt O
 p_cw=zeros(2,length(s)); % contact position wrt W
 R_matrix=@(th) [cos(th),-sin(th);sin(th),cos(th)];
 %}
 %no slip condition assumed
-theta_cg = zeros(1,length(s));
-theta_cg(1) = atan2(mp.obj_cg(2),mp.obj_cg(1));
+theta_o = atan2(mp.dim(1)/2,mp.dim(2)/2); %angle between tipping point and cg
 po_cg(:,1) = [mp.obj_cg(1);mp.obj_cg(2)];
-mp.cg_r = sqrt((mp.tip_pnt(1)-po_cg(1))^2 + (mp.tip_pnt(2)-po_cg(2))^2);
+r_tip = sqrt((mp.dim(1)/2)^2 + (mp.dim(2)/2)^2); %dist between object center and tipping point
 for i=1:length(s)
     %x = R theta
-    if i ~= 1
-        theta_cg(i) = s(i)+ theta_cg(i-1);
-        po_cg(:,i) = [mp.cg_r*cos(theta_cg(i));mp.cg_r*sin(theta_cg(i))];
-        p_c(:,i) = po_cg(:,i) + mp.p_con; %
-        p_cw(:,i) = po_cg(:,i) + R_matrix(s(i))*(p_c(:,i)); %contact point
-    else
-        p_c(:,i) = po_cg(:,i) + mp.p_con;
-        p_cw(:,i) = po_cg(:,i) + R_matrix(s(i))*(p_c(:,i)); %contact point
-    end
+    phi = s(i) + theta_o;
+    po_cg(:,i) = [(mp.tip_pnt(1) + r_tip*cos(phi)); (mp.tip_pnt(2) + r_tip*sin(phi))]; %calculate object cg position
+    p_cw(:,i) = po_cg(:,i) + R_matrix(s(i))*(mp.p_con); %calculate contact point wrt W
     sol=IK_2R(mp.links(1),mp.links(2),p_cw(1,i),p_cw(2,i));
     th1(i) = sol(1,1);
     th2(i) = sol(2,1);
@@ -60,11 +55,9 @@ for i=1:length(s)
     y_cg(:,i) = cg_pos(2,:)';
     x_j(:,i) = joint_pos(1,:)'; %joints
     y_j(:,i) = joint_pos(2,:)';
-    [xcorner,ycorner]=corners(po_cg(:,i),mp.dim);
-    box_corners = [xcorner ; ycorner];
-    box_vec = R_matrix(s(i))*box_corners;
-    xbox(:,i) = box_vec(1,:)';
-    ybox(:,i) = box_vec(2,:)';
+    [xcorner,ycorner]=corners_tip(po_cg(:,i),mp.dim,s(i));
+    xbox(:,i) = xcorner';
+    ybox(:,i) = ycorner';
     dir1 = vec2ang([0;0],[x_cg(1,i);y_cg(1,i)]);
     dir2 = vec2ang([x_j(1,i);y_j(1,i)],[x_cg(1,i);y_cg(1,i)]);
     dir3 = vec2ang([x_j(1,i);y_j(1,i)],[x_cg(2,i);y_cg(2,i)]);
@@ -81,15 +74,12 @@ for i=1:length(s)
     %link 3
     [r_32(1,i),r_32(2,i)] = vector_lncs(r3_mag,dir5);
     [r_34(1,i),r_34(2,i)] = vector_lncs(r3_mag,dir6);
+    
+    th3(i) = vec2ang(po_cg(:,i),mp.tip_pnt); %angle between tipping point and horizontal    
 end
 
 %vel and accel approximate IC=0
 for i=2:length(s)
-    %linear object
-    v_cg(1,i) = mp.cg_r*theta_cg(i)*cos(theta_cg(i));
-    v_cg(2,i) = mp.cg_r*theta_cg(i)*sin(theta_cg(i));
-    a_cg(1,i) = mp.cg_r*v_cg(i)*cos(theta_cg(i));
-    a_cg(2,i) = mp.cg_r*v_cg(i)*sin(theta_cg(i));
     %linear links
     v_x(:,i) = (x_cg(:,i) - x_cg(:,i-1))/mp.dt;
     v_y(:,i) = (y_cg(:,i) - y_cg(:,i-1))/mp.dt;
@@ -100,13 +90,17 @@ for i=2:length(s)
     w(2,i) = ((th2(i)+th1(i)) - (th2(i-1)+th1(i-1)))/mp.dt;
     alpha(1,i) = (w(1,i) - w(1,i-1))/mp.dt;
     alpha(2,i) = (w(2,i) - w(2,i-1))/mp.dt;
+    %linear object
+    v_cg(1,i) = r_tip*w(i)*(-sin(th3(i))); %x
+    v_cg(2,i) = r_tip*w(i)*cos(th3(i)); %y
+    a_cg(1,i) = (r_tip*a(i)*(-sin(th3(i))))-(r_tip*w(i)^2*cos(th3(i)));
+    a_cg(2,i) = (r_tip*a(i)*(cos(th3(i))))-(r_tip*w(i)^2*sin(th3(i)));
 end
 mp.xbox = xbox;
 mp.ybox = ybox;
 mp.p_j = [x_j;y_j];
 mp.p_cg = [x_cg;y_cg];
 mp.po_cg = po_cg;
-mp.p_c=p_c;
 mp.p_cw=p_cw;
 mp.R = [r_14;r_12;r_21;r_23;r_32;r_34];
 mp.v_links = [v_x;v_y];
@@ -116,5 +110,6 @@ mp.a_cg = a_cg;
 mp.alpha = alpha;
 mp.w = w;
 mp.dirs = dirs;
-mp.theta_cg=theta_cg;
+mp.theta_cg=phi;
+mp.finger_theta = [th1 ; th2 ; th3];
 end

@@ -67,6 +67,8 @@ for i = 1:length(radii_g)
     radii_y(i).LineStyle = '--';
     radii_y(i).MarkerFaceColor='y';
 end
+f17.Color='b';
+f17.MarkerFaceColor='b';
 lp_sol = cell2mat(mp.x);
 x_j = mp.p_j(1:2,:);
 y_j = mp.p_j(3:4,:);
@@ -77,8 +79,8 @@ v_y = mp.v_links(3:4,:);
 a_x = mp.a_links(1:2,:);
 a_y = mp.a_links(3:4,:);
 po_cg = mp.po_cg;
-vo_x = mp.svaj_curve(2,:);
-ao_x = mp.svaj_curve(3,:);
+vo_cg = mp.v_cg;
+ao_cg = mp.a_cg;
 
 str = '';
 an=annotation(h,'textbox',[.6 .75 .1 .1],'String',str,'FitBoxToText','on');
@@ -114,10 +116,10 @@ for i=1:length(mp.x)
     f4.YData = y_j(2,i);
     f4.UData = -scaling*lp_sol(5,i); %F_32x = -F_23x
     f4.VData = -scaling*lp_sol(6,i); %F_32y = -F_23y
-    f15.XData = po_cg(1,i);
-    f15.YData = 0;
-    f15.UData = scaling*(-sign(vo_x(i))*mp.mu(1)*abs(lp_sol(7,i))); %F_34x = - sign(v) mu F_34y
-    f15.VData = scaling*lp_sol(7,i);  %F_34y = F_23y + F_g
+    f15.XData = mp.tip_pnt(1);
+    f15.YData = mp.tip_pnt(2);
+    f15.UData = scaling*lp_sol(7,i); %F_34x
+    f15.VData = scaling*lp_sol(8,i);  %F_34y
     
     f5.XData = x_cg(1,i);
     f5.YData = y_cg(1,i);
@@ -137,12 +139,12 @@ for i=1:length(mp.x)
     f8.VData = scaling*a_y(2,i);  %a_y2
     f9.XData = po_cg(1,i);
     f9.YData = po_cg(2,i);
-    f9.UData = scaling*vo_x(i); %v_ox
-    f9.VData = 0;  %v_oy
+    f9.UData = scaling*vo_cg(1,i); %vo_cg x
+    f9.VData = scaling*vo_cg(2,i);  %vo_cg y
     f10.XData = po_cg(1,i);
     f10.YData = po_cg(2,i);
-    f10.UData = scaling*ao_x(i); %a_ox
-    f10.VData = 0;  %a_oy
+    f10.UData = scaling*ao_cg(1,i); %ao_cg x
+    f10.VData = scaling*ao_cg(2,i);  %ao_cg y
     
     f11.XData = x_cg(1,i);
     f11.YData = y_cg(1,i);

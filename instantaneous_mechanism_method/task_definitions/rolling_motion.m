@@ -30,7 +30,7 @@ r_34=zeros(2,length(s));
 %object
 %{\
 po_cg=zeros(2,length(s)); %object center position wrt W
-p_c=zeros(2,length(s)); %contact position wrt O
+%p_c=zeros(2,length(s)); %contact position wrt O
 p_cw=zeros(2,length(s)); % contact position wrt W
 R_matrix=@(th) [cos(th),-sin(th);sin(th),cos(th)];
 %}
@@ -43,8 +43,7 @@ end
 for i=1:length(s)
     %x = R theta
     po_cg(:,i) = [s(i);mp.dim];
-    p_c(:,i) = [mp.dim*cos(pi/2);mp.dim*sin(pi/2)]; %contact at top of circle
-    p_cw(:,i) = po_cg(:,i) + R_matrix(theta(i))*(p_c(:,i)); %contact points
+    p_cw(:,i) = po_cg(:,i) + R_matrix(theta(i))*(mp.p_con); %contact point wrt W
     sol=IK_2R(mp.links(1),mp.links(2),p_cw(1,i),p_cw(2,i));
     th1(i) = sol(1,1);
     th2(i) = sol(2,1);
@@ -89,7 +88,6 @@ end
 mp.p_j = [x_j;y_j];
 mp.p_cg = [x_cg;y_cg];
 mp.po_cg = po_cg;
-mp.p_c=p_c;
 mp.p_cw=p_cw;
 mp.R = [r_14;r_12;r_21;r_23;r_32;r_34];
 mp.v_links = [v_x;v_y];
@@ -98,4 +96,5 @@ mp.alpha = alpha;
 mp.w = w;
 mp.dirs = dirs;
 mp.theta=theta;
+mp.finger_theta = [th1 ; th2];
 end

@@ -1,7 +1,7 @@
 function mp = lp_dynamics_tipping(mp)
 %linear program dynamics rolling
 
-%x = [F14x F14y F12x F12y F23x F23y F34y T1 T2]
+%x = [F14x F14y F12x F12y F23x F23y F34x F34y T1 T2]
 for i=1:length(mp.svaj_curve)
     %{
     Aeq = [
@@ -40,10 +40,8 @@ for i=1:length(mp.svaj_curve)
         mp.mass(2)*mp.a_links(4,i) - mp.mass(2)*mp.g_force(2)
         mp.I(2)*mp.alpha(2,i)
         mp.mass(3)*mp.a_cg(1,i) - mp.mass(3)*mp.g_force(1)
-        -mp.mass(3)*mp.g_force(2)
+        mp.mass(3)*mp.a_cg(2,i) - mp.mass(3)*mp.g_force(2)
         mp.I(3)*mp.svaj_curve(3,i)
-        %0
-        %0
         ];
       %}
     Auneq=[
