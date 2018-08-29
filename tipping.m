@@ -13,7 +13,7 @@ mp.dim = [.03 .05]; %m [height length]
 mp.I = [mp.I_rod(mp.mass(1),mp.links(1)) mp.I_rod(mp.mass(2),mp.links(2)) mp.I_cube(mp.mass(3),mp.dim)]; %moment of inertias kg m^2
 mp.p_con = [-mp.dim(2)/2 ; mp.dim(1)/2]; %contact point x y wrt obj
 mp.dt = .01;
-mp.mu = [.1 .9]; %friction coefficents [object/floor , finger/object]
+mp.mu = [.5 .9]; %friction coefficents [object/floor , finger/object]
 %gravity parameters
 mp.g_acc = 9.80665;
 mp.g_dir = 3*pi/2;

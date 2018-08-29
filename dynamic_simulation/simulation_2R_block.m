@@ -20,7 +20,7 @@ function [z,q,mp] = simulation_2R_block(mp,initial_N,N)
 % 2. Choose suitable time-step length
 % 3. Determine the configuration of box and 2R manipulator
 %addpath(genpath('pathmexmaci64'));
-addpath(genpath('pathmexw64')); % path of path solver windows
+%addpath(genpath('pathmexw64')); % path of path solver windows
 %% input: 1)angular impulse on each joint, 2) applied impulse on box
 global tau_1 tau_2 p_x p_y p_z ;
 

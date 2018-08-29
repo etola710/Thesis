@@ -2,9 +2,9 @@ clearvars
 close all
 %% Planning algorithm
 %Sliding Motion
-addpath(genpath('instantaneous_mechanism_method'));
-addpath(genpath('pathmex')); % path of path solver
-
+addpath(genpath('instantaneous_mechanism_method')); %path of planner
+addpath(genpath('pathmex')); % path of solver
+addpath(genpath('dynamic_simulation')); % path of simulation
 mp = struct();
 %finger dimensions
 mp.links = [.08 .05]; %m
