@@ -7,16 +7,18 @@ ylabel('Position')
 title('S')
 grid on
 ax2 = subplot(4,1,2);
-plot(mp.tp,mp.svaj_curve(2,:))
+plot(mp.tp,mp.svaj_curve(2,:),mp.tp, mp.obj_apprx(1,:))
 xlabel('Time (s)')
 ylabel('Velocity')
+legend('V_x','\hat(V_x)');
 title('V')
 grid on
 axis tight
 ax3 = subplot(4,1,3);
-plot(mp.tp,mp.svaj_curve(3,:))
+plot(mp.tp,mp.svaj_curve(3,:),mp.tp, mp.obj_apprx(3,:))
 xlabel('Time (s)')
 ylabel('Acceleration')
+legend('A_x','\hat(A_x)');
 title('A')
 grid on
 ax4 = subplot(4,1,4);

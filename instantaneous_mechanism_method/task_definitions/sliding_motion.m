@@ -10,6 +10,10 @@ v_x=zeros(2,length(s));
 v_y=zeros(2,length(s));
 a_x=zeros(2,length(s));
 a_y=zeros(2,length(s));
+vo_x=zeros(1,length(s));
+vo_y=zeros(1,length(s));
+ao_x=zeros(1,length(s));
+ao_y=zeros(1,length(s));
 w = zeros(2,length(s));
 alpha = zeros(2,length(s));
 th1=zeros(1,length(s));
@@ -63,19 +67,24 @@ for i=1:length(s)
     
 end
 
-%vel and accel approximate IC=0
+%vel and accel approximations IC=0
 
 for i=2:length(s)
-    %linear
+    %link linear
     v_x(:,i) = (x_cg(:,i) - x_cg(:,i-1))/mp.dt;
     v_y(:,i) = (y_cg(:,i) - y_cg(:,i-1))/mp.dt;
     a_x(:,i) = (v_x(:,i) - v_x(:,i-1))/mp.dt;
     a_y(:,i) = (v_y(:,i) - v_y(:,i-1))/mp.dt;
-    %angular
+    % link angular
     w(1,i)   = (th1(i) - th1(i-1))/mp.dt;
     w(2,i)   = ((th2(i)+th1(i)) - (th2(i-1)+th1(i-1)))/mp.dt;
     alpha(1,i) = (w(1,i) - w(1,i-1))/mp.dt;
     alpha(2,i) =  (w(2,i) - w(2,i-1))/mp.dt;
+    %obj linear
+    vo_x(:,i) = (po_cg(1,i) - po_cg(1,i-1))/mp.dt;
+    vo_y(:,i) = (po_cg(2,i) - po_cg(2,i-1))/mp.dt;
+    ao_x(:,i) = (vo_x(:,i) - vo_x(:,i-1))/mp.dt;
+    ao_y(:,i) = (vo_y(:,i) - vo_y(:,i-1))/mp.dt;
 end
 
 mp.xbox = xbox;
@@ -91,4 +100,5 @@ mp.dirs = dirs;
 mp.po_cg = po_cg;
 mp.p_c=p_c;
 mp.finger_theta = [th1 ; th2];
+mp.obj_apprx = [vo_x ;vo_y ;ao_x ;ao_y];
 end

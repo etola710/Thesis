@@ -1,35 +1,10 @@
-function mp = sliding_fun(link_lengths,mass,time,object_x_positions,contact_point,object_dimensions,dt,friction_coeffs)
+function strct_out = sliding_fun(strct_in)
 %Sliding Motion
-%addpath(genpath('instantaneous_mechanism_method'));
-%addpath(genpath('pathmexmaci64')); % path of path solver mac
-%addpath(genpath('pathmexw64')); % path of path solver windows
-mp = struct();
-%finger dimensions
-mp.links = link_lengths; %m
-mp.mass = mass; %kg
-mp.I_rod = @(m,l) (m*l^2)/12;
-mp.I = [mp.I_rod(mp.mass(1),mp.links(1)) mp.I_rod(mp.mass(2),mp.links(2))]; %moment of inertias kg m^2
-%object dimensions
-mp.dim = object_dimensions; %m [height length]
-mp.dt = dt;
-mp.mu = friction_coeffs; %friction coefficents [object/floor , finger/object]
-%gravity parameters
-mp.g_acc = 9.80665;
-mp.g_dir = 3*pi/2;
-mp.g_force = [mp.g_acc*cos(mp.g_dir) mp.g_acc*sin(mp.g_dir)]; %Fg_x Fg_y
-%motion primitive
-mp.time = time; %s time for each step
-mp.pos = object_x_positions; %m x coordinate [inital, ..., final]
-mp.p_con = contact_point; %contact point x y wrt object
-%generate sliding motion plan
-mp = sliding_motion(mp);
-%svaj_plot(mp);
+strct_out = strct_in;
+strct_out = sliding_motion(strct_out);
 %lp dynamics
-mp.x=cell(1,length(mp.svaj_curve));
-mp.fval=1:length(mp.svaj_curve);
-mp = lp_dynamics_sliding(mp);
-mp.lp = cell2mat(mp.x);
-%mp = torque_plot_s(mp);
-%mp.filename ='sliding.gif';
-%mp.gif_fps=10;
-%sliding_plot(mp);
+strct_out.x=cell(1,length(strct_out.svaj_curve));
+strct_out.fval=1:length(strct_out.svaj_curve);
+strct_out = lp_dynamics_sliding(strct_out);
+strct_out.lp = cell2mat(strct_out.x);
+end

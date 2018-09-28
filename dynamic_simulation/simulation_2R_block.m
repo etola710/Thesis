@@ -35,14 +35,14 @@ F_12y = lp_sol(4,:);
 F_23x = lp_sol(5,:);
 F_23y = lp_sol(6,:);
 F_34y = lp_sol(7,:);
-F_34x_i = mp.mu(1)*((-sign(mp.svaj_curve(2,:))).*abs(F_34y(:)'));
+F_34x_i = mp.mu(1)*((-sign(mp.svaj_curve(2,1:mp.lp_steps))).*abs(F_34y(:)'));
 T1 = lp_sol(8,:)*unit;
 T2 = lp_sol(9,:)*unit;
 
 
 % 2R manipulator
-tau_1 = (T1(initial_N+1)+T1(initial_N+1))/2; % joint 1 (N.s)
-tau_2 = (T2(initial_N+1)+T2(initial_N+1))/2; % joint 2 (N.s)
+tau_1 = T1(initial_N); % joint 1 (N.s)
+tau_2 = T2(initial_N); % joint 2 (N.s)
 
 % box
 p_x = 0; % applied impulse along x axis
@@ -88,7 +88,7 @@ eBG_t = 1;
 %% determine the initial configuration of the box and 2R manipulator 
 
 % configuration of the box:
-q_x = mp.svaj_curve(1,initial_N)*unit;    % x coordinates of c.m of box
+q_x = mp.po_cg(1,initial_N)*unit;    % x coordinates of c.m of box
 q_y = H/2;   % y coordinates of c.m of box
 theta = 0;   % orientation of the box
 
@@ -119,12 +119,12 @@ mp.theta(2,1) = theta2 +nu_old(2)*h;
 % Z - initial guess 
 
 V = [mp.w(1,initial_N+1);mp.w(2,initial_N+1);mp.svaj_curve(2,initial_N+1)*unit;0;0];
-P_nc = [F_23x(initial_N+1);F_34x_i(initial_N+1)];
+P_nc = [F_23x(initial_N);F_34x_i(initial_N)];
 
 Ca = [0;0;0;0;0;0];
 SIG = [0;0];
 La = [0;0;0;0;1;0];
-P_c = [F_23y(initial_N+1);m*g*h+F_23y(initial_N+1)];
+P_c = [F_23y(initial_N);m*g*h+F_23y(initial_N)];
 Z = [V;P_nc;Ca;SIG;La;P_c];
 
 % z - unknown variables at each time step
@@ -175,13 +175,14 @@ for i=initial_N:N
    
    q_old = q_old + h*z(1:5,i); 
    nu_old = z(1:5,i); 
+   
    q(:,i) = q_old;
    
 
-   tau_1 = (T1(i+2)+T1(i+2))/2; % joint 1 (N.s)
-   tau_2 = (T2(i+2)+T2(i+2))/2; % joint 2 (N.s)
+   tau_1 = T1(i); % joint 1 (N.s)
+   tau_2 = T2(i); % joint 2 (N.s)
 
-   
+   %mp.finger_theta
    mp.theta(1,i+1) = mp.theta(1,i) +h*mp.w(1,i+1);
    mp.theta(2,i+1) = mp.theta(2,i) +h*mp.w(2,i+1);
    %figure_plot_sliding(q,i,L,L1,L2,H);
