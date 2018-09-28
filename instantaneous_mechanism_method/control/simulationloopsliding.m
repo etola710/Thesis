@@ -78,8 +78,9 @@ s_fun = @(a,b) a/max(abs(b));
 
 tic
 initial_N = 1; % initial time to simulate
-N = 10; %number of steps
+N = 1; %number of steps
 cl_struct = mp;
+cl_struct.lp_steps = 10;
 total_time = 0;
 mp.error = .01;
 counter = 1;
@@ -89,11 +90,11 @@ for i = 1:length(mp.pos)
     while d_pos >=  mp.error
         %simulation
         %cl_struct
-        [z_d,q_d] = simulation_2R_block(cl_struct,initial_N,N)
+        [z_d,q_d,~] = simulation_2R_block(cl_struct,initial_N,N)
         %update current position
-        q(:,:,counter) = q_d(:,N); %use the initial N step
-        z(:,counter) = z_d(:,N); %use the initial N step
-        current_pos = q(3,1,counter)/mp.unit
+        q(:,:,counter) = q_d(:,initial_N); %use the initial N step
+        z(:,counter) = z_d(:,initial_N); %use the initial N step
+        current_pos = q(3,1,counter)
         d_pos = abs(mp.pos(i) - current_pos)
         mp.d_pos(counter) = d_pos;
         %planner
@@ -103,8 +104,8 @@ for i = 1:length(mp.pos)
         %compute LP for each instance
         %torques_1 = zeros(1,round(time/mp.dt)+1,N);
         %torques_2 = zeros(1,round(time/mp.dt)+1,N);
-        cl_struct.po_cg = [current_pos mp.pos(i)]; %current state to goal state
-        cl_struct.lp_steps = N;
+        cl_struct.pos = [current_pos mp.pos(i)]; %current state to goal state
+        %planner
         cl_struct = sliding_fun(cl_struct);
         %sum torques
         current_pos
@@ -112,8 +113,8 @@ for i = 1:length(mp.pos)
         %cl_struct.lp
         %cl_struct.lp(8,:);
         %cl_struct.lp(9,:);
-        T1 = (sum(cl_struct.lp(8,:)))*mp.unit;
-        T2 = (sum(cl_struct.lp(9,:)))*mp.unit;
+        T1 = (sum(cl_struct.lp(8,:)))/cl_struct.lp_steps;
+        T2 = (sum(cl_struct.lp(9,:)))/cl_struct.lp_steps;
         %update structure with new torque values
         mp.cl_torques(:,:,counter)= [T1 ; T2];
         %{\
@@ -227,7 +228,7 @@ for i = 1:length(mp.pos)
         %iteration limit
         if itr >=  500
             warning('Maximum Number of Iterations Reached');
-            continue;
+            return;
         else
             itr = itr + 1;
         end
@@ -239,5 +240,5 @@ end
 toc
 mp.q=q;
 mp.z=z;
-sprintf('Simulation Complete\n')
+sprintf('Simulation Complete')
 end

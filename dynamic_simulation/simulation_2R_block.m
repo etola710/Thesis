@@ -35,7 +35,7 @@ F_12y = lp_sol(4,:);
 F_23x = lp_sol(5,:);
 F_23y = lp_sol(6,:);
 F_34y = lp_sol(7,:);
-F_34x_i = mp.mu(1)*((-sign(mp.svaj_curve(2,1:mp.lp_steps))).*abs(F_34y(:)'));
+F_34x_i = mp.mu(1)*((-sign(mp.obj_apprx(1,1:initial_N))).*abs(F_34y(:)'));
 T1 = lp_sol(8,:)*unit;
 T2 = lp_sol(9,:)*unit;
 
@@ -119,12 +119,12 @@ mp.theta(2,1) = theta2 +nu_old(2)*h;
 % Z - initial guess 
 
 V = [mp.w(1,initial_N+1);mp.w(2,initial_N+1);mp.svaj_curve(2,initial_N+1)*unit;0;0];
-P_nc = [F_23x(initial_N);F_34x_i(initial_N)];
+P_nc = [F_23x(initial_N+1);F_34x_i(initial_N+1)];
 
 Ca = [0;0;0;0;0;0];
 SIG = [0;0];
 La = [0;0;0;0;1;0];
-P_c = [F_23y(initial_N);m*g*h+F_23y(initial_N)];
+P_c = [F_23y(initial_N+1);m*g*h+F_23y(initial_N+1)];
 Z = [V;P_nc;Ca;SIG;La;P_c];
 
 % z - unknown variables at each time step
