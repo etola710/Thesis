@@ -34,6 +34,7 @@ mp = lp_dynamics_sliding(mp);
 mp.lp = cell2mat(mp.x);
 mp = torque_plot_s(mp);
 mp.filename ='sliding.gif';
+mp.filename1='sliding-sim.gif';
 mp.gif_fps=10;
 %sliding_plot(mp);
 mp.unit = 1;

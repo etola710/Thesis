@@ -1,6 +1,7 @@
 function mp = simulationloopsliding(mp)
 h=figure;
 ax=axes(h,'XLim',[-.1,.2],'YLim',[-.1,.2]);
+hold on
 finger=line(ax);
 finger.Parent=ax;
 finger.LineWidth=2;
@@ -10,8 +11,12 @@ obj=line(ax);
 obj.Parent=ax;
 obj.LineWidth=2;
 obj.Color='g';
-hold on
-
+obj_cg = plot(ax,0,0,'o');
+obj_cg.Color='g';
+obj_cg.LineWidth=2;
+desired_pos = plot(ax,0,0,'o');
+desired_pos.Color='r';
+desired_pos.LineWidth=2;
 f1 = quiver(ax,0,0,0,0);
 f2 = quiver(ax,0,0,0,0);
 f3 = quiver(ax,0,0,0,0);
@@ -82,7 +87,7 @@ N = 1; %number of steps
 cl_struct = mp;
 cl_struct.lp_steps = 10;
 total_time = 0;
-mp.error = .01;
+mp.error = .008;
 counter = 1;
 for i = 1:length(mp.pos)
     itr = 1;
@@ -90,16 +95,16 @@ for i = 1:length(mp.pos)
     while d_pos >=  mp.error
         %simulation
         %cl_struct
-        [z_d,q_d,~] = simulation_2R_block(cl_struct,initial_N,N)
+        [z_d,q_d,~] = simulation_2R_block(cl_struct,initial_N,N);
         %update current position
         q(:,:,counter) = q_d(:,initial_N); %use the initial N step
         z(:,counter) = z_d(:,initial_N); %use the initial N step
-        current_pos = q(3,1,counter)
-        d_pos = abs(mp.pos(i) - current_pos)
+        current_pos = q(3,1,counter);
+        d_pos = abs(mp.pos(i) - current_pos);
         mp.d_pos(counter) = d_pos;
         %planner
         %select proper time interval
-        %time scaling
+        %time scaling - currently constant
         cl_struct.time(:) = .1;
         %compute LP for each instance
         %torques_1 = zeros(1,round(time/mp.dt)+1,N);
@@ -139,7 +144,10 @@ for i = 1:length(mp.pos)
         finger.YData=ygph;
         obj.XData=[cl_struct.xbox(1,1),cl_struct.xbox(2,1),cl_struct.xbox(3,1),cl_struct.xbox(4,1),cl_struct.xbox(1,1)];
         obj.YData=[cl_struct.ybox(1,1),cl_struct.ybox(2,1),cl_struct.ybox(3,1),cl_struct.ybox(4,1),cl_struct.ybox(1,1)];
-        
+        obj_cg.XData = po_cg(1);
+        obj_cg.YData = po_cg(2);
+        desired_pos.XData = mp.pos(i); 
+        desired_pos.YData = mp.dim(1)/2;
         f1.XData = 0;
         f1.YData = 0;
         f1.UData = scaling*lp_sol(1,1); %F_14x
@@ -220,9 +228,9 @@ for i = 1:length(mp.pos)
         im = frame2im(frame);
         [imind,cm] = rgb2ind(im,256);
         if i == 1
-            imwrite(imind,cm,mp.filename,'gif','Loopcount',inf);
+            imwrite(imind,cm,mp.filename1,'gif','Loopcount',inf);
         else
-            imwrite(imind,cm,mp.filename,'gif','WriteMode','append','DelayTime',1/mp.gif_fps);
+            imwrite(imind,cm,mp.filename1,'gif','WriteMode','append','DelayTime',1/mp.gif_fps);
         end
         %}
         %iteration limit
