@@ -85,9 +85,9 @@ tic
 initial_N = 1; % initial time to simulate
 N = 1; %number of steps
 cl_struct = mp;
-cl_struct.lp_steps = 10;
+cl_struct.lp_steps = 2;
 total_time = 0;
-mp.error = .008;
+mp.error = .0005;
 counter = 1;
 for i = 1:length(mp.pos)
     itr = 1;
@@ -105,7 +105,17 @@ for i = 1:length(mp.pos)
         %planner
         %select proper time interval
         %time scaling - currently constant
-        cl_struct.time(:) = .1;
+        if i == 1
+            time_scale = (d_pos/abs(mp.pos(i) - q(3,1,1)))*.1;
+        else
+            time_scale = (d_pos/abs(mp.pos(i) - mp.pos(i-1)))*.1;
+        end
+        if time_scale <= mp.dt
+            time_scale = 3*mp.dt;
+        else
+        cl_struct.time(:) = time_scale;
+        end
+        cl_struct.time
         %compute LP for each instance
         %torques_1 = zeros(1,round(time/mp.dt)+1,N);
         %torques_2 = zeros(1,round(time/mp.dt)+1,N);

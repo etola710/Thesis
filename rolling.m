@@ -24,14 +24,14 @@ mp.pos = [.08 .075]; %m x positions
 mp.p_con = [mp.dim*cos(pi/2);mp.dim*sin(pi/2)]; %contact point at top of circle
 %generate rolling motion plan
 mp=rolling_motion(mp);
-%svaj_plot(mp);
+svaj_plot(mp);
 %lp dynamics
 mp.x=cell(1,length(mp.svaj_curve));
 mp.fval=1:length(mp.svaj_curve);
 mp = lp_dynamics_rolling(mp);%linear program solution
 %mp = dynamics_rolling(mp); %direct solution
 mp.lp = cell2mat(mp.x);
-%mp = torque_plot_r(mp); %linear program
+mp = torque_plot_r(mp); %linear program
 %mp = torque_plot_rd(mp); %direct solution
 mp.filename = 'rolling.gif';
 mp.gif_fps = 10;
