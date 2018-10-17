@@ -1,6 +1,7 @@
 function tipping_plot(mp)
 h=figure;
 ax=axes(h,'XLim',[-.1,.2],'YLim',[-.1,.2]);
+hold on
 finger=line(ax);
 finger.Parent=ax;
 finger.LineWidth=2;
@@ -10,7 +11,9 @@ obj=line(ax);
 obj.Parent=ax;
 obj.LineWidth=2;
 obj.Color='g';
-hold on
+obj_cg = plot(ax,0,0,'o');
+obj_cg.Color='g';
+obj_cg.LineWidth=2;
 
 f1 = quiver(ax,0,0,0,0);
 f2 = quiver(ax,0,0,0,0);
@@ -84,12 +87,10 @@ ao_cg = mp.a_cg;
 
 str = '';
 an=annotation(h,'textbox',[.6 .75 .1 .1],'String',str,'FitBoxToText','on');
-obj_cg = plot(ax,0,0,'o');
-obj_cg.Color='g';
-obj_cg.LineWidth=2;
+
 
 scaling = .1;
-s_fun = @(a,b) a/max(abs(b));
+%s_fun = @(a,b) a/max(abs(b));
 %F_34y = lp_sol(6,:) + mp.mass(3)*mp.g_force(2);
 for i=1:length(mp.x)
     xgph = [0, x_j(:,i)'];

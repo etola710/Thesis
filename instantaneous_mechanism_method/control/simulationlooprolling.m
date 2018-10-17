@@ -1,4 +1,4 @@
-function mp = simulationloopsliding(mp)
+function mp = simulationlooprolling(mp)
 h=figure;
 ax=axes(h,'XLim',[-.1,.2],'YLim',[-.1,.2]);
 hold on
@@ -7,10 +7,9 @@ finger.Parent=ax;
 finger.LineWidth=2;
 finger.Color='b';
 finger.Marker='o';
-obj=line(ax);
-obj.Parent=ax;
+obj=rectangle('Parent',ax,'Curvature',[1,1]);
 obj.LineWidth=2;
-obj.Color='g';
+obj.EdgeColor='g';
 obj_cg = plot(ax,0,0,'o');
 obj_cg.Color='g';
 obj_cg.LineWidth=2;
@@ -78,14 +77,14 @@ str = '';
 an=annotation(h,'textbox',[.6 .75 .1 .1],'String',str,'FitBoxToText','on');
 
 scaling = .1;
-s_fun = @(a,b) a/max(abs(b));
+%s_fun = @(a,b) a/max(abs(b));
 %F_34y = lp_sol(6,:) + mp.mass(3)*mp.g_force(2);
 
 tic
 initial_N = 1; % initial time to simulate
-N = 1; %number of steps
+N = 1; %number of steps to simulate
 cl_struct = mp; %initialize structure
-cl_struct.lp_steps = 2;
+cl_struct.lp_steps = 2; %planning predict horizon
 total_time = 0;
 mp.error = .0005;
 counter = 1;
@@ -94,8 +93,9 @@ for i = 1:length(mp.pos)
     d_pos = 1000; %arbitrary
     while d_pos >=  mp.error
         %simulation
-        [z_d,q_d,~] = simulation_2R_block(cl_struct,initial_N,N);
-        %update current position
+        %perform simulation
+        [z_d,q_d] = simulation_2R_circle(cl_struct,initial_N,N);
+        %update structure
         q(:,:,counter) = q_d(:,initial_N); %use the initial N step
         z(:,counter) = z_d(:,initial_N); %use the initial N step
         current_pos = q(3,1,counter);
@@ -105,14 +105,19 @@ for i = 1:length(mp.pos)
         %select proper time interval
         %time scaling - currently constant
         if i == 1
-            time_scale = (d_pos/abs(mp.pos(i) - q(3,1,1)))*mp.timescale;
+            dist = abs(mp.pos(i) - q(3,1,1));
+            if dist > 0
+                time_scale = (d_pos/dist)*mp.timescale;
+            else
+                time_scale = mp.timescale;
+            end
         else
             time_scale = (d_pos/abs(mp.pos(i) - mp.pos(i-1)))*mp.timescale;
         end
-        if time_scale <= 3*mp.dt
-            time_scale = 3*mp.dt;
+        if time_scale <= mp.dt
+            time_scale = 1.2*mp.dt;
         else
-        cl_struct.time(:) = time_scale;
+            cl_struct.time(:) = time_scale;
         end
         cl_struct.time
         %compute LP for each instance
@@ -120,7 +125,9 @@ for i = 1:length(mp.pos)
         %torques_2 = zeros(1,round(time/mp.dt)+1,N);
         cl_struct.pos = [current_pos mp.pos(i)]; %current state to goal state
         %planner
-        cl_struct = sliding_fun(cl_struct);
+        cl_struct.obj_cg = [q(3,1,counter) q(4,1,counter)];
+        cl_struct.obj_cg
+        cl_struct = rolling_fun(cl_struct);
         %sum torques
         current_pos
         mp.pos(i)
@@ -136,9 +143,9 @@ for i = 1:length(mp.pos)
         [joint_pos , cg_pos]=DK_2R(mp.links,[q(1,1,counter) q(2,1,counter)]);
         lp_sol = cell2mat(cl_struct.x);
         F23x_s = z(6,counter)/mp.dt;
-        F23y_s = z(22,counter)/mp.dt;
+        F23y_s = z(20,counter)/mp.dt;
         F34x_s = z(7,counter)/mp.dt;
-        F34y_s = z(23,counter)/mp.dt;
+        F34y_s = z(21,counter)/mp.dt;
         x_j = joint_pos(1,:);
         y_j = joint_pos(2,:);
         x_cg = cg_pos(1,:);
@@ -152,7 +159,7 @@ for i = 1:length(mp.pos)
             a_x = [0;0];
             a_y = [0;0];
             ao_x = 0;
-        	ao_y = 0;
+            ao_y = 0;
         else
             [~ , cg_pos_old]=DK_2R(mp.links,[q(1,1,counter-1) q(2,1,counter-1)]);
             x_cg_old = cg_pos_old(1,:);
@@ -170,20 +177,19 @@ for i = 1:length(mp.pos)
         ygph = [0, y_j(1) y_j(2)];
         finger.XData=xgph;
         finger.YData=ygph;
-        obj.XData=[cl_struct.xbox(1,1),cl_struct.xbox(2,1),cl_struct.xbox(3,1),cl_struct.xbox(4,1),cl_struct.xbox(1,1)];
-        obj.YData=[cl_struct.ybox(1,1),cl_struct.ybox(2,1),cl_struct.ybox(3,1),cl_struct.ybox(4,1),cl_struct.ybox(1,1)];
+        obj.Position=[po_cg(1)-(mp.dim*2)/2 po_cg(2)-(mp.dim*2)/2 (mp.dim*2) (mp.dim*2)];
         obj_cg.XData = po_cg(1);
         obj_cg.YData = po_cg(2);
-        desired_pos.XData = mp.pos(i); 
+        desired_pos.XData = mp.pos(i);
         desired_pos.YData = mp.dim(1)/2;
         f1.XData = 0;
         f1.YData = 0;
-        f1.UData = scaling*(sum(lp_sol(1,:))/cl_struct.lp_steps); %F_14x
-        f1.VData = scaling*(sum(lp_sol(2,:))/cl_struct.lp_steps); %F_14y
+        f1.UData = scaling*lp_sol(1,1); %F_14x
+        f1.VData = scaling*lp_sol(2,1); %F_14y
         f2.XData = x_j(1);
         f2.YData = y_j(1);
-        f2.UData = scaling*(sum(lp_sol(3,:))/cl_struct.lp_steps); %F_12x
-        f2.VData = scaling*(sum(lp_sol(4,:))/cl_struct.lp_steps); %F_12y
+        f2.UData = scaling*lp_sol(3,1); %F_12x
+        f2.VData = scaling*lp_sol(4,1); %F_12y
         f3.XData = x_j(2);
         f3.YData = y_j(2);
         f3.UData = scaling*F23x_s; %F_23x
@@ -194,8 +200,8 @@ for i = 1:length(mp.pos)
         f4.VData = -scaling*F23y_s; %F_32y = -F_23y
         f15.XData = po_cg(1);
         f15.YData = 0;
-        f15.UData = scaling*F34x_s; %F_34x 
-        f15.VData = scaling*F34y_s;  %F_34y = F_23y + F_g
+        f15.UData = scaling*F34x_s; %F_34x
+        f15.VData = scaling*F34y_s; %F_34y
         
         f5.XData = x_cg(1);
         f5.YData = y_cg(1);
@@ -222,12 +228,12 @@ for i = 1:length(mp.pos)
         f10.UData = scaling*ao_x; %a_ox
         f10.VData = scaling*ao_y;  %a_oy
         
-      dir1 = vec2ang([0;0],[x_cg(1);y_cg(1)]);
+        dir1 = vec2ang([0;0],[x_cg(1);y_cg(1)]);
         dir2 = vec2ang([x_j(1);y_j(1)],[x_cg(1);y_cg(1)]);
         dir3 = vec2ang([x_j(1);y_j(1)],[x_cg(2);y_cg(2)]);
         dir4 = vec2ang([x_j(2);y_j(2)],[x_cg(2);y_cg(2)]);
-        dir5 = vec2ang([po_cg(1),0],po_cg);
-        dir6 = vec2ang(cl_struct.p_cw(:,1),po_cg);
+        dir5 = vec2ang([po_cg(1), mp.dim(1)],po_cg);
+        dir6 = vec2ang([po_cg(1),0],po_cg);
         [r_14x,r_14y] = vector_lncs(mp.r1_mag,dir1);
         [r_12x,r_12y] = vector_lncs(mp.r1_mag,dir2);
         %link 2
@@ -262,7 +268,6 @@ for i = 1:length(mp.pos)
         f17.UData = r_34x; %r_34x
         f17.VData = r_34y;  %r_34y
         
-        
         str = sprintf('t = %f seconds',total_time);
         an.String = str;
         
@@ -286,11 +291,11 @@ for i = 1:length(mp.pos)
         end
         counter = counter + 1;
         total_time = total_time + mp.dt;
+        sprintf('count = %d\n itr = %d\n',counter,itr);
     end
 end
 toc
 mp.q=q;
 mp.z=z;
-mp.total_time = total_time;
 sprintf('Simulation Complete')
 end

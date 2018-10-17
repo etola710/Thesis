@@ -1,7 +1,7 @@
 function mp = tipping_motion(mp)
 mp = motion_generation(mp);
 s=mp.svaj_curve(1,:); %radians
-w=mp.svaj_curve(2,:); %radians/s
+w_obj = mp.svaj_curve(2,:);
 a=mp.svaj_curve(3,:); %radians/s^2
 x_cg=zeros(2,length(s));
 y_cg=zeros(2,length(s));
@@ -15,6 +15,8 @@ a_x=zeros(2,length(s));
 a_y=zeros(2,length(s));
 w = zeros(2,length(s));
 alpha = zeros(2,length(s));
+w_objapprx = zeros(1,length(s));
+a_objapprx = zeros(1,length(s));
 th1=zeros(1,length(s));
 th2=zeros(1,length(s));
 th3=zeros(1,length(s));
@@ -90,11 +92,14 @@ for i=2:length(s)
     w(2,i) = ((th2(i)+th1(i)) - (th2(i-1)+th1(i-1)))/mp.dt;
     alpha(1,i) = (w(1,i) - w(1,i-1))/mp.dt;
     alpha(2,i) = (w(2,i) - w(2,i-1))/mp.dt;
+    %angular object apprx
+    w_objapprx(i) = (s(i) - s(i-1))/mp.dt;
+    a_objapprx(i) = (w_objapprx(i)-w_objapprx(i-1))/mp.dt;
     %linear object
-    v_cg(1,i) = r_tip*w(i)*(-sin(th3(i))); %x
-    v_cg(2,i) = r_tip*w(i)*cos(th3(i)); %y
-    a_cg(1,i) = (r_tip*a(i)*(-sin(th3(i))))-(r_tip*w(i)^2*cos(th3(i)));
-    a_cg(2,i) = (r_tip*a(i)*(cos(th3(i))))-(r_tip*w(i)^2*sin(th3(i)));
+    v_cg(1,i) = r_tip*w_objapprx(i)*(-sin(th3(i))); %x
+    v_cg(2,i) = r_tip*w_objapprx(i)*cos(th3(i)); %y
+    a_cg(1,i) = (r_tip*a_objapprx(i)*(-sin(th3(i))))-(r_tip*w_objapprx(i)^2*cos(th3(i)));
+    a_cg(2,i) = (r_tip*a_objapprx(i)*(cos(th3(i))))-(r_tip*w_objapprx(i)^2*sin(th3(i)));
 end
 mp.xbox = xbox;
 mp.ybox = ybox;
@@ -112,4 +117,9 @@ mp.w = w;
 mp.dirs = dirs;
 mp.theta_cg=phi;
 mp.finger_theta = [th1 ; th2 ; th3];
+mp.w_objapprx = w_objapprx;
+mp.a_objapprx = a_objapprx;
+mp.r1_mag=r1_mag;
+mp.r2_mag=r2_mag;
+mp.r3_mag=r3_mag;
 end

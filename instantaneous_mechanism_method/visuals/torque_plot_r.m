@@ -1,5 +1,5 @@
 function mp = torque_plot_r(mp)
-%x = [F14x F14y F12x F12y F23y F34y T1 T2] 1x9
+%x = [F14x F14y F12x F12y F23y F34x F34y T1 T2] 1x10
 lp_sol = mp.lp;
 F_14x = lp_sol(1,:);
 F_14y = lp_sol(2,:);
@@ -14,7 +14,7 @@ T2 = lp_sol(10,:);
 mp.c=1:length(lp_sol);
 mp.FC=zeros(1,length(lp_sol(5,:)));
 for i=1:length(lp_sol)
-    mp.c(i)=(abs(T2(i))/abs(T1(i))); %c = T2/T1 
+    mp.c(i)=(T2(i)/T1(i)); %c = T2/T1 
     if (round(abs(F_23x(i)),8) <= round(abs(mp.mu(2)*F_23y(i)),8)) == 1 %friction cone constraints fx leq mu fy
         mp.FC(i) = 1;
     else
@@ -147,5 +147,19 @@ plot(mp.tp,mp.alpha(1,:),mp.tp,mp.alpha(2,:),mp.tp,mp.alpha(3,:))
 xlabel('Time s')
 ylabel('\alpha rad/s^2')
 legend('\alpha_1' , '\alpha_2', '\alpha_3')
+grid on
+
+figure
+subplot(2,1,1)
+plot(mp.tp,mp.obj_apprx(1,:),mp.tp,mp.obj_apprx(2,:))
+xlabel('Time s')
+ylabel('v_{obj} m/s')
+legend('v_{x}', 'v_{y}')
+grid on
+subplot(2,1,2)
+plot(mp.tp,mp.obj_apprx(3,:),mp.tp,mp.obj_apprx(4,:))
+xlabel('Time s')
+ylabel('a_{obj} m/s^2')
+legend('a_{x}', 'a_{y}')
 grid on
 end

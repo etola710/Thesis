@@ -2,7 +2,7 @@ function mp = lp_dynamics_tipping(mp)
 %linear program dynamics rolling
 
 %x = [F14x F14y F12x F12y F23x F23y F34x F34y T1 T2]
-for i=1:length(mp.svaj_curve)
+for i=1:mp.lp_steps
     %{
     Aeq = [
         1 0 1 0 0 0 0 0 0;
@@ -41,7 +41,7 @@ for i=1:length(mp.svaj_curve)
         mp.I(2)*mp.alpha(2,i)
         mp.mass(3)*mp.a_cg(1,i) - mp.mass(3)*mp.g_force(1)
         mp.mass(3)*mp.a_cg(2,i) - mp.mass(3)*mp.g_force(2)
-        mp.I(3)*mp.svaj_curve(3,i)
+        mp.I(3)*mp.a_objapprx(i)
         ];
       %}
     Auneq=[
@@ -57,11 +57,11 @@ for i=1:length(mp.svaj_curve)
     lb = [-Inf -Inf -Inf -Inf -Inf 0 -Inf 0 -Inf -Inf]; %x = [F14x F14y F12x F12y F23x F23y F34x F34y T1 T2] 1x10
     ub = [Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf];
     [lp_sol,fval,exitflag,~,~] = linprog(f,Auneq,buneq,Aeq,beq,lb,ub);
-    if isempty(lp_sol)
+    if exitflag ~= 1 
         mp.x{i} = zeros(10,1);
     else
         mp.x{i} = lp_sol;
     end
-    exitflag
+
 end
 end

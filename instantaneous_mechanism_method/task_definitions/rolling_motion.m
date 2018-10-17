@@ -1,8 +1,8 @@
 function mp = rolling_motion(mp)
 mp = motion_generation(mp);
 s=mp.svaj_curve(1,:);
-v=mp.svaj_curve(2,:);
-a=mp.svaj_curve(3,:);
+%v=mp.svaj_curve(2,:);
+%a=mp.svaj_curve(3,:);
 x_cg=zeros(2,length(s));
 y_cg=zeros(2,length(s));
 x_j=zeros(2,length(s));
@@ -11,6 +11,10 @@ v_x=zeros(2,length(s));
 v_y=zeros(2,length(s));
 a_x=zeros(2,length(s));
 a_y=zeros(2,length(s));
+vo_x=zeros(1,length(s));
+vo_y=zeros(1,length(s));
+ao_x=zeros(1,length(s));
+ao_y=zeros(1,length(s));
 w = zeros(3,length(s));
 alpha = zeros(3,length(s));
 th1=zeros(1,length(s));
@@ -80,10 +84,14 @@ for i=2:length(s)
     %angular links
     w(1,i) = (th1(i) - th1(i-1))/mp.dt;
     w(2,i) = ((th2(i)+th1(i)) - (th2(i-1)+th1(i-1)))/mp.dt;
-    w(3,i) = (theta(i) - theta(i-1))/mp.dt;
+    w(3,i) = (theta(i) - theta(i-1))/mp.dt; %obj
     alpha(1,i) = (w(1,i) - w(1,i-1))/mp.dt;
     alpha(2,i) = (w(2,i) - w(2,i-1))/mp.dt;
-    alpha(3,i) = (w(3,i)-w(3,i-1))/mp.dt;
+    alpha(3,i) = (w(3,i)-w(3,i-1))/mp.dt; %obj
+    vo_x(:,i) = (po_cg(1,i) - po_cg(1,i-1))/mp.dt;
+    vo_y(:,i) = (po_cg(2,i) - po_cg(2,i-1))/mp.dt;
+    ao_x(:,i) = (vo_x(:,i) - vo_x(:,i-1))/mp.dt;
+    ao_y(:,i) = (vo_y(:,i) - vo_y(:,i-1))/mp.dt;
 end
 mp.p_j = [x_j;y_j];
 mp.p_cg = [x_cg;y_cg];
@@ -97,4 +105,8 @@ mp.w = w;
 mp.dirs = dirs;
 mp.theta=theta;
 mp.finger_theta = [th1 ; th2];
+mp.obj_apprx = [vo_x ;vo_y ;ao_x ;ao_y];
+mp.r1_mag=r1_mag;
+mp.r2_mag=r2_mag;
+mp.r3_mag=r3_mag;
 end

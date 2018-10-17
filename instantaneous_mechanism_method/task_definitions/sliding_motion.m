@@ -31,11 +31,11 @@ r_34=zeros(2,length(s));
 %replace with generic object function
 xbox = zeros(4,length(s));
 ybox = zeros(4,length(s));
-p_c = zeros(2,length(s));
-p_c(2,:) = mp.p_con(2);
+p_cw = zeros(2,length(s));
+p_cw(2,:) = mp.p_con(2);
 for i=1:length(s)
-    p_c(1,i) = mp.p_con(1)+s(i);
-    sol=IK_2R(mp.links(1),mp.links(2),p_c(1,i),p_c(2,i)); %contact point
+    p_cw(1,i) = mp.p_con(1)+s(i);
+    sol=IK_2R(mp.links(1),mp.links(2),p_cw(1,i),p_cw(2,i)); %contact point
     th1(i) = sol(1,1);
     th2(i) = sol(2,1);
     [joint_pos, cg_pos] = DK_2R(mp.links,[th1(i),th2(i)]);
@@ -52,7 +52,7 @@ for i=1:length(s)
     dir2 = vec2ang([x_j(1,i);y_j(1,i)],[x_cg(1,i);y_cg(1,i)]);
     dir3 = vec2ang([x_j(1,i);y_j(1,i)],[x_cg(2,i);y_cg(2,i)]);
     dir4 = vec2ang([x_j(2,i);y_j(2,i)],[x_cg(2,i);y_cg(2,i)]);
-    dir5 = vec2ang([p_c(1,i);p_c(2,i)],[po_cg(1,i);po_cg(2,i)]);
+    dir5 = vec2ang([p_cw(1,i);p_cw(2,i)],[po_cg(1,i);po_cg(2,i)]);
     dir6 = vec2ang([po_cg(1,i);0],[po_cg(1,i);po_cg(2,i)]);
     dirs(:,i) = [dir1;dir2;dir3;dir4;dir5;dir6];
     %link 1
@@ -98,7 +98,10 @@ mp.alpha = alpha;
 mp.w = w;
 mp.dirs = dirs;
 mp.po_cg = po_cg;
-mp.p_c=p_c;
+mp.p_cw=p_cw;
 mp.finger_theta = [th1 ; th2];
 mp.obj_apprx = [vo_x ;vo_y ;ao_x ;ao_y];
+mp.r1_mag=r1_mag;
+mp.r2_mag=r2_mag;
+mp.r3_mag=r3_mag;
 end

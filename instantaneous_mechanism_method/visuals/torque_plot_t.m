@@ -137,15 +137,29 @@ xlabel('Time s')
 ylabel('\theta rad')
 grid on
 subplot(3,1,2)
-plot(mp.tp,mp.w(1,:),mp.tp,mp.w(2,:),mp.tp,mp.svaj_curve(2,:))
+plot(mp.tp,mp.w(1,:),mp.tp,mp.w(2,:),mp.tp,mp.w_objapprx)
 xlabel('Time s')
 ylabel('\omega rad/s')
 legend('\omega_1', '\omega_2', '\omega_3')
 grid on
 subplot(3,1,3)
-plot(mp.tp,mp.alpha(1,:),mp.tp,mp.alpha(2,:),mp.tp,mp.svaj_curve(3,:))
+plot(mp.tp,mp.alpha(1,:),mp.tp,mp.alpha(2,:),mp.tp,mp.w_objapprx)
 xlabel('Time s')
 ylabel('\alpha rad/s^2')
 legend('\alpha_1' , '\alpha_2', '\alpha_3')
+grid on
+
+figure
+subplot(2,1,1)
+plot(mp.tp,mp.v_cg(1,:),mp.tp,mp.v_cg(2,:))
+xlabel('Time s')
+ylabel('v_{obj} m/s')
+legend('v_{x}', 'v_{y}')
+grid on
+subplot(2,1,2)
+plot(mp.tp,mp.a_cg(1,:),mp.tp,mp.a_cg(2,:))
+xlabel('Time s')
+ylabel('a_{obj} m/s^2')
+legend('a_{x}', 'a_{y}')
 grid on
 end

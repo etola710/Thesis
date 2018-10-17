@@ -174,10 +174,10 @@ F(14) = muRB^2*pRB_n^2 - pRB_t^2/eRB_t^2;
 F(15) = muBG^2*pBG_n^2 - pBG_t^2/eBG_t^2;
 
 %% lanrange equations
-F(16) = H/2 - c*(a1RB_y - q_y) + s*(a1RB_x - q_x); %top active constraint contact
+F(16) = H/2 - c*(a1RB_y - q_y) + s*(a1RB_x - q_x); %active constraint
 
-F(17) = -a1BG_y; %ground act const
-F(18) = H/2 - c*(a2BG_y - q_y) + s*(a2BG_x - q_x); %top surfaces of the block
+F(17) = -a1BG_y;
+F(18) = H/2 - c*(a2BG_y - q_y) + s*(a2BG_x - q_x);
 F(19) = L/2 - c*(a2BG_x - q_x) - s*(a2BG_y - q_y);
 F(20) = H/2 + c*(a2BG_y - q_y) - s*(a2BG_x - q_x);
 F(21) = L/2 + c*(a2BG_x - q_x) + s*(a2BG_y - q_y);
