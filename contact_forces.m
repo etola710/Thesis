@@ -1,3 +1,4 @@
+addpath(genpath('instantaneous_mechanism_method')); %path of planner
 p(:,:,1) = [1 ,1 ,1];
 p(:,:,2) = [1 ,-1 ,1];
 o_center = [0 0 1];
