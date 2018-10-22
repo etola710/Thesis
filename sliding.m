@@ -16,8 +16,9 @@ mp.dim = [.03 .05]; %m [height length]
 mp.dt = .01;
 mp.mu = [.1 .9]; %friction coefficents [object/floor , finger/object]
 %gravity parameters
+mp.tilt_angle = pi/3;
 mp.g_acc = 9.80665;
-mp.g_dir = 3*pi/2;
+mp.g_dir = 3*pi/2 - mp.tilt_angle;
 mp.g_force = [mp.g_acc*cos(mp.g_dir) mp.g_acc*sin(mp.g_dir)]; %Fg_x Fg_y
 %motion primitive
 mp.time = [.5 .5 .5]; %s time for each step

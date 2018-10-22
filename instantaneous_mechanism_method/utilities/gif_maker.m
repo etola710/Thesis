@@ -1,10 +1,10 @@
-function gif_maker
+function gif_maker(h,filename)
 frame = getframe(h);
         im = frame2im(frame);
         [imind,cm] = rgb2ind(im,256);
-        if i == 1
-            imwrite(imind,cm,mp.filename1,'gif','Loopcount',inf);
+        if exist(filename,'file') == 0
+            imwrite(imind,cm,filename,'gif','Loopcount',inf);
         else
-            imwrite(imind,cm,mp.filename1,'gif','WriteMode','append','DelayTime',1/mp.gif_fps);
+            imwrite(imind,cm,filename,'gif','WriteMode','append','DelayTime',1/mp.gif_fps);
         end
 end

@@ -1,21 +1,32 @@
 close all
+alpha = .3;
+dim = [ .05, mp.dim(2), mp.dim(1)]; % l x w x h object dimensions
 %Finger Configurations
-R_f1 = rpy_rot(0,0,0);
-p_f1 = [-.05 .05 0];
+R_f1 = rpy_rot(0,0,-pi);
+p_f1 = [-.01 .05 0];
 g_f1 = tf_matrix(R_f1,p_f1);
-R_f2 = rpy_rot(0,0,-pi/4);
-p_f2 = [.05 .05 0]; 
+pcp_f1 = [-dim(1)/2, 0, -dim(3)/2]';
+R_f2 = rpy_rot(0,0,pi);
+p_f2 = [.01 .05 0];
 g_f2 = tf_matrix(R_f2,p_f2);
-R_f3 = rpy_rot(0,0,pi/2);
-p_f3 = [0 -.05 0]; 
+pcp_f2 = [dim(1)/2, 0, -dim(3)/2]';
+R_f3 = rpy_rot(0,0,0);
+Rmp_f3 = R_f3*rpy_rot(mp.tilt_angle,0,0);
+p_f3 = [0 -.05 0];
 g_f3 = tf_matrix(R_f3,p_f3);
-
+gmp_f3 = tf_matrix(Rmp_f3,p_f3);
 %Object Configuration
-R_o = eye(3);
-p_o = [0 0 .15];
-g_o = tf_matrix(R_o,p_o);
-
-g_fingers = {g_f1 g_f2 g_f3};
+object_height = 0;
+R_o = Rmp_f3;
+p_o = [ones(size(mp.po_cg(1,:)))*object_height;mp.po_cg(1,:) ; mp.po_cg(2,:)];
+for i = 1:length(p_o)
+    pw_o(:,i) = gmp_f3*[p_o(:,i) ; 1];
+    g_o(:,:,i) = tf_matrix(R_o,pw_o(1:3,i)');
+end
+g_fingers = {g_f1 g_f2 g_f3 gmp_f3};
+p_cp = [pcp_f1 pcp_f2];
 p_j = mp.p_j;
 p_cg = mp.p_cg;
-hand_viz(g_fingers,g_o,p_j,p_cg)
+filename = 'MP3D.gif';
+fps=10;
+hand_viz(mp,g_fingers,g_o,p_j,p_cg,p_cp,filename,fps,alpha,dim)
