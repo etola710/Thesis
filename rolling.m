@@ -16,6 +16,7 @@ mp.I = [mp.I_rod(mp.mass(1),mp.links(1)) mp.I_rod(mp.mass(2),mp.links(2)) mp.I_d
 mp.dt = .01;
 mp.mu = [.1 .9]; %friction coefficents [object/floor , finger/object]
 %gravity parameters
+mp.tilt_angle = pi/3;
 mp.g_acc = 9.80665;
 mp.g_dir = 3*pi/2;
 mp.g_force = [mp.g_acc*cos(mp.g_dir) mp.g_acc*sin(mp.g_dir)]; %Fg_x Fg_y
@@ -26,7 +27,7 @@ mp.p_con = [mp.dim*cos(pi/2);mp.dim*sin(pi/2)]; %contact point at top of circle
 %generate rolling motion plan
 mp.ver='r';
 mp=rolling_motion(mp);
-svaj_plot(mp);
+%svaj_plot(mp);
 %lp dynamics
 mp.x=cell(1,length(mp.svaj_curve));
 mp.fval=1:length(mp.svaj_curve);
@@ -39,10 +40,11 @@ mp.lp = cell2mat(mp.x);
 mp.filename = 'rolling.gif';
 mp.filename1 = 'rolling-sim.gif';
 mp.gif_fps = 10;
-%rolling_plot(mp); %linear program solution
+rolling_plot(mp); %linear program solution
 %rolling_plot_d(mp); %direct solution
 mp.unit = 1;
 mp.timescale = .5;
+hand_r;
 %% simulation validation
 % z - variables contains the state of the system and lagrange variables
 % q - configuration of the system

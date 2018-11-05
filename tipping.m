@@ -16,6 +16,7 @@ mp.p_con = [-mp.dim(2)/2 ; mp.dim(1)/2]; %contact point x y wrt obj
 mp.dt = .01;
 mp.mu = [.9 .5]; %friction coefficents [object/floor , finger/object]
 %gravity parameters
+mp.tilt_angle = pi/3;
 mp.g_acc = 9.80665;
 mp.g_dir = 3*pi/2;
 mp.g_force = [mp.g_acc*cos(mp.g_dir) mp.g_acc*sin(mp.g_dir)]; %Fg_x Fg_y
@@ -38,9 +39,10 @@ mp.lp = cell2mat(mp.x);
 mp.filename ='tipping.gif';
 mp.filename1='tipping-sim.gif';
 mp.gif_fps=10;
-%tipping_plot(mp);
+tipping_plot(mp);
 mp.unit = 1;
 mp.timescale = .1;
+hand_t;
 %% simulation validation
 % z - variables contains the state of the system and lagrange variables
 % q - configuration of the system

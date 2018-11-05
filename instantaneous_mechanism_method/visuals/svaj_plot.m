@@ -1,23 +1,26 @@
 function svaj_plot(mp)
-figure
 switch mp.ver
     case {'s','r'}
-        ax1 = subplot(4,1,1);
+        figure
+        ax1 = subplot(2,1,1);
         plot(ax1,mp.tp,mp.svaj_curve(1,:))
-        ax2=subplot(4,1,2);
+        ax2=subplot(2,1,2);
         plot(ax2,mp.tp,mp.svaj_curve(2,:),mp.tp, mp.obj_apprx(1,:))
-        ax3=subplot(4,1,3);
+        figure
+        ax3=subplot(2,1,1);
         plot(ax3,mp.tp,mp.svaj_curve(3,:),mp.tp, mp.obj_apprx(3,:))
-        ax4=subplot(4,1,4);
+        ax4=subplot(2,1,2);
         plot(ax4,mp.tp,mp.svaj_curve(4,:))
     case 't'
-        ax1=subplot(4,1,1);
+        figure
+        ax1=subplot(a,2,1,1);
         plot(ax1,mp.tp,mp.svaj_curve(1,:))
-        ax2=subplot(4,1,2);
+        ax2=subplot(a,2,1,2);
         plot(ax2,mp.tp,mp.svaj_curve(2,:),mp.tp, mp.w_objapprx)
-        ax3=subplot(4,1,3);
+        figure
+        ax3=subplot(b,2,1,1);
         plot(ax3,mp.tp,mp.svaj_curve(3,:),mp.tp, mp.a_objapprx)
-        ax4=subplot(4,1,4);
+        ax4=subplot(b,2,1,2);
         plot(ax4,mp.tp,mp.svaj_curve(4,:))
 end
 xlabel(ax1,'Time (s)')

@@ -16,9 +16,9 @@ p_f3 = [0 -.05 0];
 g_f3 = tf_matrix(R_f3,p_f3);
 gmp_f3 = tf_matrix(Rmp_f3,p_f3);
 %Object Configuration
-object_height = 0;
+x_axis_shift = 0;
 R_o = Rmp_f3;
-p_o = [ones(size(mp.po_cg(1,:)))*object_height;mp.po_cg(1,:) ; mp.po_cg(2,:)];
+p_o = [ones(size(mp.po_cg(1,:)))*x_axis_shift;mp.po_cg(1,:) ; mp.po_cg(2,:)];
 for i = 1:length(p_o)
     pw_o(:,i) = gmp_f3*[p_o(:,i) ; 1];
     g_o(:,:,i) = tf_matrix(R_o,pw_o(1:3,i)');
@@ -27,6 +27,6 @@ g_fingers = {g_f1 g_f2 g_f3 gmp_f3};
 p_cp = [pcp_f1 pcp_f2];
 p_j = mp.p_j;
 p_cg = mp.p_cg;
-filename = 'MP3D.gif';
+filename = 'sliding-3D.gif';
 fps=10;
-hand_viz(mp,g_fingers,g_o,p_j,p_cg,p_cp,filename,fps,alpha,dim)
+mp = hand_viz_s(mp,g_fingers,g_o,p_j,p_cg,p_cp,filename,fps,alpha,dim);

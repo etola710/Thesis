@@ -1,5 +1,5 @@
 
-function [z,q,mp] = simulation_2R_block(mp,initial_N,N)
+function [z,q,mp] = simulation_2R_block(mp,initial_N,N,nu_sim)
 
 %% notation
 % This is the simulation for underactuated manipulation in 2D between a 2R manipulator and a box.
@@ -117,8 +117,9 @@ q_old = [theta1;theta2;q_x;q_y;theta];
 % nu_old - generalized velocity vector at l, nu_old=[w_1o;w_2o;v_xo;v_yo;w_o]
 global nu_old;
 
-nu_old = [mp.w(1,initial_N+1);mp.w(2,initial_N+1);mp.svaj_curve(2,initial_N+1)*unit;0;0];
-
+%nu_old = [mp.w(1,initial_N+1);mp.w(2,initial_N+1);mp.svaj_curve(2,initial_N+1)*unit;0;0];
+nu_old = nu_sim;
+nu_old(3) = nu_old(3)*unit;
 
 %% time-step length
 global h;

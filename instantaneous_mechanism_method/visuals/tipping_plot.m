@@ -89,7 +89,7 @@ str = '';
 an=annotation(h,'textbox',[.6 .75 .1 .1],'String',str,'FitBoxToText','on');
 
 
-scaling = .1;
+scaling = 1;
 %s_fun = @(a,b) a/max(abs(b));
 %F_34y = lp_sol(6,:) + mp.mass(3)*mp.g_force(2);
 for i=1:length(mp.x)

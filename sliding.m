@@ -38,9 +38,10 @@ mp.lp = cell2mat(mp.x);
 mp.filename ='sliding.gif';
 mp.filename1='sliding-sim.gif';
 mp.gif_fps=10;
-%sliding_plot(mp);
+sliding_plot(mp);
 mp.unit = 1;
-mp.timescale = .15;
+mp.timescale = .5;
+hand_s;
 %% simulation validation
 % z - variables contains the state of the system and lagrange variables
 % q - configuration of the system

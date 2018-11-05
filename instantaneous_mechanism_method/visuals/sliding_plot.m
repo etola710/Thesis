@@ -83,8 +83,8 @@ ao_x = mp.svaj_curve(3,:);
 str = '';
 an=annotation(h,'textbox',[.6 .75 .1 .1],'String',str,'FitBoxToText','on');
 
-scaling = .1;
-s_fun = @(a,b) a/max(abs(b));
+scaling = 1;
+s_fun = @(a,b) abs(a)/max(abs(b));
 %F_34y = lp_sol(6,:) + mp.mass(3)*mp.g_force(2);
 for i=1:length(mp.x)
     xgph = [0, x_j(:,i)'];
@@ -96,8 +96,8 @@ for i=1:length(mp.x)
     
     f1.XData = 0;
     f1.YData = 0;
-    f1.UData = scaling*lp_sol(1,i); %F_14x
-    f1.VData = scaling*lp_sol(2,i); %F_14y
+    f1.UData = scaling*s_fun(lp_sol(1,i),lp_sol(1,:))*sign(lp_sol(1,i)); %F_14x
+    f1.VData = scaling*s_fun(lp_sol(2,i),lp_sol(2,:))*sign(lp_sol(2,i)); %F_14y
     f2.XData = x_j(1,i);
     f2.YData = y_j(1,i);
     f2.UData = scaling*lp_sol(3,i); %F_12x

@@ -89,23 +89,25 @@ cl_struct.lp_steps = 2;
 total_time = 0;
 mp.error = .0005;
 counter = 1;
+nu_old = zeros(5,1);
 for i = 1:length(mp.pos)
     itr = 1;
     d_pos = 1000; %arbitrary
     while d_pos >=  mp.error
         %simulation
-        [z_d,q_d,~] = simulation_2R_block(cl_struct,initial_N,N);
+        [z_d,q_d,~] = simulation_2R_block(cl_struct,initial_N,N,nu_old);
         %update current position
-        q(:,:,counter) = q_d(:,initial_N); %use the initial N step
-        z(:,counter) = z_d(:,initial_N); %use the initial N step
-        current_pos = q(3,1,counter);
+        mp.q(:,:,counter) = q_d(:,initial_N); %use the initial N step
+        mp.z(:,counter) = z_d(:,initial_N); %use the initial N step
+        nu_old = mp.z(1:5,counter);
+        current_pos = mp.q(3,1,counter);
         d_pos = abs(mp.pos(i) - current_pos);
         mp.d_pos(counter) = d_pos;
         %planner
         %select proper time interval
         %time scaling - currently constant
         if i == 1
-            time_scale = (d_pos/abs(mp.pos(i) - q(3,1,1)))*mp.timescale;
+            time_scale = (d_pos/abs(mp.pos(i) - mp.q(3,1,1)))*mp.timescale;
         else
             time_scale = (d_pos/abs(mp.pos(i) - mp.pos(i-1)))*mp.timescale;
         end
@@ -133,19 +135,19 @@ for i = 1:length(mp.pos)
         mp.cl_torques(:,:,counter)= [T1 ; T2];
         %{\
         %visualization
-        [joint_pos , cg_pos]=DK_2R(mp.links,[q(1,1,counter) q(2,1,counter)]);
+        [joint_pos , cg_pos]=DK_2R(mp.links,[mp.q(1,1,counter) mp.q(2,1,counter)]);
         lp_sol = cell2mat(cl_struct.x);
-        F23x_s = z(6,counter)/mp.dt;
-        F23y_s = z(22,counter)/mp.dt;
-        F34x_s = z(7,counter)/mp.dt;
-        F34y_s = z(23,counter)/mp.dt;
+        F23x_s = mp.z(6,counter)/mp.dt;
+        F23y_s = mp.z(22,counter)/mp.dt;
+        F34x_s = mp.z(7,counter)/mp.dt;
+        F34y_s = mp.z(23,counter)/mp.dt;
         x_j = joint_pos(1,:);
         y_j = joint_pos(2,:);
         x_cg = cg_pos(1,:);
         y_cg = cg_pos(2,:);
-        po_cg = [q(3,1,counter) q(4,1,counter)];
-        vo_x = z(3,counter)/mp.dt;
-        vo_y = z(4,counter)/mp.dt;
+        po_cg = [mp.q(3,1,counter) mp.q(4,1,counter)];
+        vo_x = mp.z(3,counter)/mp.dt;
+        vo_y = mp.z(4,counter)/mp.dt;
         if counter == 1
             v_x(:,counter) = [0;0];
             v_y(:,counter) = [0;0];
@@ -154,7 +156,7 @@ for i = 1:length(mp.pos)
             ao_x = 0;
         	ao_y = 0;
         else
-            [~ , cg_pos_old]=DK_2R(mp.links,[q(1,1,counter-1) q(2,1,counter-1)]);
+            [~ , cg_pos_old]=DK_2R(mp.links,[mp.q(1,1,counter-1) mp.q(2,1,counter-1)]);
             x_cg_old = cg_pos_old(1,:);
             y_cg_old = cg_pos_old(2,:);
             %links
@@ -163,8 +165,8 @@ for i = 1:length(mp.pos)
             a_x = [(v_x(1,counter)-v_x(1,counter-1))/mp.dt ; (v_x(2,counter)-v_x(2,counter-1))/mp.dt];
             a_y = [(v_y(1,counter)-v_y(1,counter-1))/mp.dt ; (v_y(2,counter)-v_y(2,counter-1))/mp.dt];
             %object
-            ao_x = (vo_x-z(3,(counter-1))/mp.dt)/mp.dt;
-            ao_y = (vo_y-z(4,(counter-1))/mp.dt)/mp.dt;
+            ao_x = (vo_x-mp.z(3,(counter-1))/mp.dt)/mp.dt;
+            ao_y = (vo_y-mp.z(4,(counter-1))/mp.dt)/mp.dt;
         end
         xgph = [0, x_j(1) x_j(2)];
         ygph = [0, y_j(1) y_j(2)];
@@ -289,8 +291,6 @@ for i = 1:length(mp.pos)
     end
 end
 toc
-mp.q=q;
-mp.z=z;
 mp.total_time = total_time;
 sprintf('Simulation Complete')
 end
