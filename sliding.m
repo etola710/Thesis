@@ -22,7 +22,8 @@ mp.g_dir = 3*pi/2 - mp.tilt_angle;
 mp.g_force = [mp.g_acc*cos(mp.g_dir) mp.g_acc*sin(mp.g_dir)]; %Fg_x Fg_y
 %motion primitive
 mp.time = [.5 .5 .5]; %s time for each step
-mp.pos = [.05 .08 .05 .08]; %m x coordinate [inital, ..., final]
+mp.pos = [.05 .08 .05 .08]; %m x coordinate [inital, ..., final] Position BCs
+mp.vel = 0; %velocity initial BC
 mp.p_con = [0 ; mp.dim(1)]; %contact point x y wrt object
 %generate sliding motion plan
 mp.ver='s';
@@ -38,10 +39,10 @@ mp.lp = cell2mat(mp.x);
 mp.filename ='sliding.gif';
 mp.filename1='sliding-sim.gif';
 mp.gif_fps=10;
-sliding_plot(mp);
+%sliding_plot(mp);
 mp.unit = 1;
 mp.timescale = .5;
-hand_s;
+%hand_s;
 %% simulation validation
 % z - variables contains the state of the system and lagrange variables
 % q - configuration of the system
@@ -66,7 +67,7 @@ comp_plot_aRB(mp,q,N)
 %% simulation validation
 % z - variables contains the state of the system and lagrange variables
 % q - configuration of the system
-%close all
+close all
 mp = simulationloopsliding(mp);
 simulationloopplot(mp)
 

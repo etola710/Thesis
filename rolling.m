@@ -23,6 +23,7 @@ mp.g_force = [mp.g_acc*cos(mp.g_dir) mp.g_acc*sin(mp.g_dir)]; %Fg_x Fg_y
 %motion prmitive
 mp.time = [.5 .5]; %s time for motion
 mp.pos = [.08 .075 .08]; %m x positions
+mp.vel = 0; %velocity initial BC
 mp.p_con = [mp.dim*cos(pi/2);mp.dim*sin(pi/2)]; %contact point at top of circle
 %generate rolling motion plan
 mp.ver='r';

@@ -77,7 +77,7 @@ end
 str = '';
 an=annotation(h,'textbox',[.6 .75 .1 .1],'String',str,'FitBoxToText','on');
 
-scaling = .1;
+scaling = 1;
 s_fun = @(a,b) a/max(abs(b));
 %F_34y = lp_sol(6,:) + mp.mass(3)*mp.g_force(2);
 
@@ -89,43 +89,54 @@ cl_struct.lp_steps = 2;
 total_time = 0;
 mp.error = .0005;
 counter = 1;
-nu_old = zeros(5,1);
-for i = 1:length(mp.pos)
+cl_struct.nu_old = zeros(5,1);
+for i = 1:length(mp.pos)-1
     itr = 1;
     d_pos = 1000; %arbitrary
     while d_pos >=  mp.error
         %simulation
-        [z_d,q_d,~] = simulation_2R_block(cl_struct,initial_N,N,nu_old);
+        [z_d,q_d,~] = simulation_2R_block(cl_struct,initial_N,N);
         %update current position
         mp.q(:,:,counter) = q_d(:,initial_N); %use the initial N step
         mp.z(:,counter) = z_d(:,initial_N); %use the initial N step
-        nu_old = mp.z(1:5,counter);
+        cl_struct.nu_old = mp.z(1:5,counter);
         current_pos = mp.q(3,1,counter);
-        d_pos = abs(mp.pos(i) - current_pos);
+        d_pos = abs(mp.pos(i+1) - current_pos);
         mp.d_pos(counter) = d_pos;
         %planner
         %select proper time interval
         %time scaling - currently constant
+        
+        %{
         if i == 1
-            time_scale = (d_pos/abs(mp.pos(i) - mp.q(3,1,1)))*mp.timescale;
+            time_scale = (d_pos/abs(mp.pos(i+1) - mp.q(3,1,1)))*mp.timescale;
         else
-            time_scale = (d_pos/abs(mp.pos(i) - mp.pos(i-1)))*mp.timescale;
+            time_scale = (d_pos/abs(mp.pos(i+1) - mp.pos(i)))*mp.timescale;
         end
         if time_scale <= 3*mp.dt
             time_scale = 3*mp.dt;
         else
         cl_struct.time(:) = time_scale;
         end
-        cl_struct.time
+        %}
+        cl_struct.time(:) = .1;
         %compute LP for each instance
         %torques_1 = zeros(1,round(time/mp.dt)+1,N);
         %torques_2 = zeros(1,round(time/mp.dt)+1,N);
-        cl_struct.pos = [current_pos mp.pos(i)]; %current state to goal state
+        d_pos
+        if d_pos < 0.01
+            cl_struct.pos = [current_pos mp.pos(1)];
+        else
+        cl_struct.pos = [current_pos mp.pos(i+1)]; %current state to goal state
+        end
+        cl_struct.pos 
+        
+        cl_struct.vel = mp.z(3,counter);
         %planner
         cl_struct = sliding_fun(cl_struct);
         %sum torques
         current_pos
-        mp.pos(i)
+        mp.pos(i+1)
         %cl_struct.lp
         %cl_struct.lp(8,:);
         %cl_struct.lp(9,:);
@@ -176,7 +187,7 @@ for i = 1:length(mp.pos)
         obj.YData=[cl_struct.ybox(1,1),cl_struct.ybox(2,1),cl_struct.ybox(3,1),cl_struct.ybox(4,1),cl_struct.ybox(1,1)];
         obj_cg.XData = po_cg(1);
         obj_cg.YData = po_cg(2);
-        desired_pos.XData = mp.pos(i); 
+        desired_pos.XData = mp.pos(i+1); 
         desired_pos.YData = mp.dim(1)/2;
         f1.XData = 0;
         f1.YData = 0;
@@ -224,7 +235,7 @@ for i = 1:length(mp.pos)
         f10.UData = scaling*ao_x; %a_ox
         f10.VData = scaling*ao_y;  %a_oy
         
-      dir1 = vec2ang([0;0],[x_cg(1);y_cg(1)]);
+        dir1 = vec2ang([0;0],[x_cg(1);y_cg(1)]);
         dir2 = vec2ang([x_j(1);y_j(1)],[x_cg(1);y_cg(1)]);
         dir3 = vec2ang([x_j(1);y_j(1)],[x_cg(2);y_cg(2)]);
         dir4 = vec2ang([x_j(2);y_j(2)],[x_cg(2);y_cg(2)]);

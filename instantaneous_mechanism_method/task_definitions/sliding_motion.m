@@ -35,6 +35,11 @@ p_cw = zeros(2,length(s));
 p_cw(2,:) = mp.p_con(2);
 for i=1:length(s)
     p_cw(1,i) = mp.p_con(1)+s(i);
+    %{\
+    if p_cw(1,i) > .1
+        p_cw(1,i) = .1;
+    end
+    %}
     sol=IK_2R(mp.links(1),mp.links(2),p_cw(1,i),p_cw(2,i)); %contact point
     th1(i) = sol(1,1);
     th2(i) = sol(2,1);

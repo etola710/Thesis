@@ -75,6 +75,16 @@ c_f2z = line(ax);
 c_f2z.LineWidth=4;
 c_f2z.Color='b';
 
+c_f3x = line(ax);
+c_f3x.LineWidth=4;
+c_f3x.Color='r';
+c_f3y = line(ax);
+c_f3y.LineWidth=4;
+c_f3y.Color='g';
+c_f3z = line(ax);
+c_f3z.LineWidth=4;
+c_f3z.Color='b';
+
 g_f3x = line(ax);
 g_f3x.LineWidth=4;
 g_f3x.Color='r';
@@ -155,7 +165,11 @@ f18 = quiver3(ax,0,0,0,0);
 f19 = quiver3(ax,0,0,0,0);
 f20 = quiver3(ax,0,0,0,0);
 f21 = quiver3(ax,0,0,0,0);
-vectors = [f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12 f13 f14 f15 f16 f17 f18 f19 f20 f21];
+f22 = quiver3(ax,0,0,0,0);
+f23 = quiver3(ax,0,0,0,0);
+f24 = quiver3(ax,0,0,0,0);
+vectors = [f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12 f13 f14 f15 f16 f17 ...
+    f18 f19 f20 f21 f22 f23 f24];
 for i =1:length(vectors)
     vectors(i).LineWidth = 4;
     vectors(i).AlignVertexCenters='on';
@@ -163,7 +177,7 @@ for i =1:length(vectors)
     vectors(i).AutoScale='off';
     vectors(i).MaxHeadSize = .01;
 end
-forces = [f1 f2 f3 f15 f18 f19];
+forces = [f1 f2 f3 f15 f18 f19 f23 f24];
 for i = 1:length(forces)
     forces(i).Color='r';
     forces(i).MarkerFaceColor='r';
@@ -176,8 +190,11 @@ f4.MarkerFaceColor='b';
 f20.Color='y';
 f20.MarkerFaceColor='y';
 
-f21.Color='k';
-f21.MarkerFaceColor='k';
+f21.Color='b';
+f21.MarkerFaceColor='b';
+
+f22.Color='k';
+f22.MarkerFaceColor='k';
 
 vels = [f5 f7 f9];
 accels = [f6 f8 f10];
@@ -190,16 +207,17 @@ for i=1:length(vels)
 end
 scaling=.05;
 for i = 1:length(p_j)
-    view(ax,100,20);
+    %view(ax,140,30);
+    view(ax,100,10);
     %plot axes
     axis_direction(xaxis,yaxis,zaxis,eye(4),smallaxis)
     axis_direction(g_f1x,g_f1y,g_f1z,g_f1,smallaxis)
     axis_direction(g_f2x,g_f2y,g_f2z,g_f2,smallaxis)
     axis_direction(g_f3x,g_f3y,g_f3z,g_f3,smallaxis)
-    axis_direction(objaxis_x,objaxis_y,objaxis_z,g_object(:,:,i),bigaxis);
+    axis_direction(objaxis_x,objaxis_y,objaxis_z,g_object(:,:,i),smallaxis);
     %finger 1 plot
-    pw_cp(:,1,i) = g_object(:,:,i)*[p_cp(:,1);1]; %object to world
-    pw_cp(:,2,i) = g_object(:,:,i)*[p_cp(:,2);1];
+    pw_cp(:,1,i) = g_object(:,:,1)*[p_cp(:,1);1]; %object to world
+    pw_cp(:,2,i) = g_object(:,:,1)*[p_cp(:,2);1];
     pl_cp(:,1,i) = tran_inv(g_f1)*pw_cp(:,1,i); %world to local
     pl_cp(:,2,i) = tran_inv(g_f2)*pw_cp(:,2,i);
     %IK
@@ -289,41 +307,60 @@ for i = 1:length(p_j)
     %wrenches in the local frame
     W_14 = [0 mp.lp(1,i) mp.lp(2,i) 0 0 0]';
     W_12 = [0 mp.lp(3,i) mp.lp(4,i) 0 0 0]';
-    W_23 = [0 mp.lp(5,i) mp.lp(6,i) 0 0 0]';
-    W_34 = [0 (-sign(mp.svaj_curve(2,i))*mp.mu(1)*mp.lp(7,i)) mp.lp(7,i) 0 0 0]';
-    W_o = -W_23 + W_34;
-    W_g = [0 0 W_o(3) 0 0 0]'
-    W_o = -W_23 + W_34 - W_g
-    W_ext = -[0;0;W_23(3);0;0;0]
+    W_23 = [0 mp.lp(5,i) mp.lp(6,i) 0 0 0]'
+    W_34 = [0 (-sign(mp.svaj_curve(2,i))*mp.mu(1)*mp.lp(7,i)) mp.lp(7,i) 0 0 0]'
+    W_R = -W_23 + W_34
+    W_o = [0 W_R(2) 0 0 0 0]'
+    W_g = [0 0 mp.mass(3)*mp.g_acc 0 0 0]'
+    %W_ext = -[0;0;W_23(3);0;0;0];
+    %local wrenches to local object wrenches
     %adjoint matrix
-    %Adj_gf3 =adjoint(gmp_f3);
+    g34 = [eye(3) [0;mp.p_con(1);-mp.p_con(2)/2] ; zeros(1,3) 1];%local to object
+    g23 = [rpy_rot(pi,0,0) [0;mp.p_con(1);mp.p_con(2)/2] ; zeros(1,3) 1];%local to object
+    Adj_F34 = adjoint(g34); %transform to object wrenches
+    Adj_F23 = adjoint(g23);
+    Wo_F34 = Adj_F34'*W_34
+    Wo_F23 = Adj_F23'*W_23
+    Wo_F34(1:3) = gmp_f3(1:3,1:3)*Wo_F34(1:3)
+    Wo_F23(1:3) = gmp_f3(1:3,1:3)*Wo_F23(1:3)
+    Wo = Wo_F23+Wo_F34
+    %object wrench due to -F23
     %rotate forces to world frame
     mp.F_14(:,i) = (gmp_f3(1:3,1:3)*W_14(1:3,:));
     mp.F_12(:,i) = (gmp_f3(1:3,1:3)*W_12(1:3,:));
     mp.F_23(:,i) = (gmp_f3(1:3,1:3)*W_23(1:3,:));
+    -mp.F_23(:,i)
     mp.F_34(:,i) = (gmp_f3(1:3,1:3)*W_34(1:3,:));
     mp.F_o(:,i) = gmp_f3(1:3,1:3)*W_o(1:3); %desired object force
     %W_23(1:3,:) = F_23;
     %support finger contact forces
     %{\
-    p(:,:,1) = f1_j2(1:3,:);
+    p(:,:,1) = f1_j2(1:3,:); %global
     p(:,:,2) = f2_j2(1:3,:);
-    vec1 = -g_object(1:3,4,i) + p(:,:,1);
-    vec2 = -g_object(1:3,4,i) + p(:,:,2);
-    Q(:,:,1) = g_object(1:3,1:3); %local contact to global frame R in SO(3)
-    Q(:,:,2) = g_object(1:3,1:3);
+    %p(:,:,3) = f3_j2(1:3,:);
+    %vec1 = -g_object(1:3,4,i) + p(:,:,1);
+    %vec2 = -g_object(1:3,4,i) + p(:,:,2);
+    Q(:,:,1) = g_object(1:3,1:3,i)*rpy_rot(0,pi/6,pi/4); %local contact to global
+    Q(:,:,2) = g_object(1:3,1:3,i)*rpy_rot(0,pi/6,-pi/2);
+    %Q(:,:,3) = g_object(1:3,1:3,i)*rpy_rot(pi,0,0);
     %w_ext = zeros(6,1);
-    f_ext = gmp_f3(1:3,1:3)*W_ext(1:3) - W_g(1:3); %motion in desired directions are set to 0
-    t_ext = zeros(3,1);
-    mp.w_ext(:,i) = [f_ext ; t_ext] %external wrench
-    [mp.c_f1(:,i),mp.c_f2(:,i)]=optimal_forces(Q,p,mp.w_ext(:,i),mp.mu(2));
+    %f_ext = mp.F_34(:,i); %motion in desired directions are set to 0
+    %t_ext = zeros(3,1);
+    %mp.w_ext(:,i) = [f_ext ; t_ext]; %external wrench
+    mp.w_ext(:,i) = [-mp.F_23(:,i); zeros(3,1)]-W_g ;
+    [mp.c_f1(:,i),mp.c_f2(:,i),mp.f_direct(:,i)]=optimal_forces(Q,p,-mp.w_ext(:,i),mp.mu(1),W_23(1:3));
     mp.c_f1(:,i)
     mp.c_f2(:,i)
+    mp.f_direct(:,i)
+    F_total = -mp.F_23(:,i) + mp.c_f1(:,i) + mp.c_f2(:,i);
     g_c1 = tran(Q(:,:,1),p(:,:,1)');
     g_c2 = tran(Q(:,:,2),p(:,:,2)');
+    %g_c3 = tran(Q(:,:,3),p(:,:,3)');
     axis_direction(c_f1x,c_f1y,c_f1z,g_c1,smallaxis) %contact frames
     axis_direction(c_f2x,c_f2y,c_f2z,g_c2,smallaxis)
+    %axis_direction(c_f3x,c_f3y,c_f3z,g_c3,smallaxis)
     %}
+    %{
     f1.XData = f3x(1);
     f1.YData = f3y(1);
     f1.ZData = f3z(1);
@@ -336,12 +373,14 @@ for i = 1:length(p_j)
     f2.UData = mp.F_12(1,i); %F_12x
     f2.VData = mp.F_12(2,i);%F_12y
     f2.WData = mp.F_12(3,i);%F_12z
+    %}
     f3.XData = f3x(3);
     f3.YData = f3y(3);
     f3.ZData = f3z(3);
-    f3.UData = mp.F_23(1,i);
-    f3.VData = mp.F_23(2,i); %F_23x
-    f3.WData = mp.F_23(3,i); %F_23y
+    f3.UData = -mp.F_23(1,i);
+    f3.VData = -mp.F_23(2,i); %F_23x
+    f3.WData = -mp.F_23(3,i); %F_23y
+    %{
     f4.XData = f3x(3);
     f4.YData = f3y(3);
     f4.ZData = f3z(3);
@@ -354,31 +393,52 @@ for i = 1:length(p_j)
     f15.UData = mp.F_34(1,i);
     f15.VData = mp.F_34(2,i); %F_34x = - sign(v) mu F_34y
     f15.WData = mp.F_34(3,i);  %F_34y = F_23y + F_g
+    %}
     f18.XData = f1x(3);
     f18.YData = f1y(3);
     f18.ZData = f1z(3);
     f18.UData = mp.c_f1(1,i); %finger 1 contact forces
-    f18.VData = mp.c_f1(2,i); 
-    f18.WData = mp.c_f1(3,i); 
+    f18.VData = mp.c_f1(2,i);
+    f18.WData = mp.c_f1(3,i);
     f19.XData = f2x(3);
     f19.YData = f2y(3);
     f19.ZData = f2z(3);
     f19.UData = mp.c_f2(1,i); %finger 2 contact forces
-    f19.VData = mp.c_f2(2,i); 
-    f19.WData = mp.c_f2(3,i); 
+    f19.VData = mp.c_f2(2,i);
+    f19.WData = mp.c_f2(3,i);
     f20.XData = g_object(1,4,i);
     f20.YData = g_object(2,4,i);
     f20.ZData = g_object(3,4,i);
     f20.UData = mp.F_o(1,i); %motion primitive object forces
     f20.VData = mp.F_o(2,i);
-    f20.WData = mp.F_o(3,i); 
+    f20.WData = mp.F_o(3,i);
     f21.XData = g_object(1,4,i);
     f21.YData = g_object(2,4,i);
     f21.ZData = g_object(3,4,i);
     f21.UData = mp.w_ext(1,i); %external forces socp
-    f21.VData = mp.w_ext(2,i); 
-    f21.WData = mp.w_ext(3,i); 
-    
+    f21.VData = mp.w_ext(2,i);
+    f21.WData = mp.w_ext(3,i);
+    %{\
+    f22.XData = g_object(1,4,i);
+    f22.YData = g_object(2,4,i);
+    f22.ZData = g_object(3,4,i);
+    f22.UData = F_total(1);
+    f22.VData = F_total(2);
+    f22.WData = F_total(3);
+    f23.XData = f1x(3);
+    f23.YData = f1y(3);
+    f23.ZData = f1z(3);
+    f23.UData = mp.f_direct(1,i);
+    f23.VData = mp.f_direct(2,i);
+    f23.WData = mp.f_direct(3,i);
+    f24.XData = f2x(3);
+    f24.YData = f2y(3);
+    f24.ZData = f2z(3);
+    f24.UData = mp.f_direct(4,i);
+    f24.VData = mp.f_direct(5,i);
+    f24.WData = mp.f_direct(6,i);
+    %}
+    %{
     f5.XData = f3_cg1(1);
     f5.YData = f3_cg1(2);
     f5.ZData = f3_cg1(3);
@@ -403,6 +463,7 @@ for i = 1:length(p_j)
     f8.UData = link2_acc(1); %a_x2
     f8.VData = link2_acc(2); %a_y2
     f8.WData = link2_acc(3); %a_z2
+    
     f9.XData = g_object(1,4,i);
     f9.YData = g_object(2,4,i);
     f9.ZData = g_object(3,4,i);
@@ -415,7 +476,7 @@ for i = 1:length(p_j)
     f10.UData = obj_acc(1); %v_ox
     f10.VData = obj_acc(2); %v_oy
     f10.WData = obj_acc(3); %v_oz
-    
+    %}
     knuckle.XData = x;
     knuckle.YData = y;
     knuckle.ZData = z;

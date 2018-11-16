@@ -1,5 +1,5 @@
 
-function [z,q,mp] = simulation_2R_block(mp,initial_N,N,nu_sim)
+function [z,q,mp] = simulation_2R_block(mp,initial_N,N)
 
 %% notation
 % This is the simulation for underactuated manipulation in 2D between a 2R manipulator and a box.
@@ -72,8 +72,8 @@ switch mp.ver
         F_14y = lp_sol(2,:);
         F_12x = lp_sol(3,:);
         F_12y = lp_sol(4,:);
-        F_23x = lp_sol(5,:);
-        F_23y = lp_sol(6,:);
+        F_23x = -lp_sol(5,:);
+        F_23y = -lp_sol(6,:);
         F_34y = lp_sol(7,:);
         F_34x = mp.mu(1)*((-sign(mp.obj_apprx(1,1:initial_N))).*abs(F_34y(:)'));
         T1 = lp_sol(8,:);
@@ -85,8 +85,8 @@ switch mp.ver
         F_14y = lp_sol(2,:);
         F_12x = lp_sol(3,:);
         F_12y = lp_sol(4,:);
-        F_23x = lp_sol(5,:);
-        F_23y = lp_sol(6,:);
+        F_23x = -lp_sol(5,:);
+        F_23y = -lp_sol(6,:);
         F_34x = lp_sol(7,:);
         F_34y = lp_sol(8,:);
         T1 = lp_sol(9,:);
@@ -118,7 +118,7 @@ q_old = [theta1;theta2;q_x;q_y;theta];
 global nu_old;
 
 %nu_old = [mp.w(1,initial_N+1);mp.w(2,initial_N+1);mp.svaj_curve(2,initial_N+1)*unit;0;0];
-nu_old = nu_sim;
+nu_old = mp.nu_old;
 nu_old(3) = nu_old(3)*unit;
 
 %% time-step length

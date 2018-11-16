@@ -1,5 +1,5 @@
 close all
-alpha = .3;
+alpha = .1;
 %dim = [ .05, mp.dim(2), mp.dim(1)]; % l x w x h object dimensions
 %Finger Configurations
 R_f1 = rpy_rot(0,0,-pi);
