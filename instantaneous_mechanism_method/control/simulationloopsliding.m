@@ -6,8 +6,8 @@ finger=line(ax);
 finger.Parent=ax;
 finger.LineWidth=2;
 finger.Color='b';
-finger.Marker='o';
 obj=line(ax);
+finger.Marker='o';
 obj.Parent=ax;
 obj.LineWidth=2;
 obj.Color='g';
@@ -87,13 +87,18 @@ N = 1; %number of steps
 cl_struct = mp; %initialize structure
 cl_struct.lp_steps = 2;
 total_time = 0;
-mp.error = .0005;
+mp.error = .001;
 counter = 1;
 cl_struct.nu_old = zeros(5,1);
+cl_struct.direction = 1;
+cl_struct.T1 = cl_struct.lp(8,1);
+cl_struct.T2 = cl_struct.lp(9,1);
+integral_term1 = 0;
+integral_term2 = 0;
 for i = 1:length(mp.pos)-1
     itr = 1;
     d_pos = 1000; %arbitrary
-    while d_pos >=  mp.error
+    while abs(d_pos) >=  mp.error
         %simulation
         [z_d,q_d,~] = simulation_2R_block(cl_struct,initial_N,N);
         %update current position
@@ -101,13 +106,31 @@ for i = 1:length(mp.pos)-1
         mp.z(:,counter) = z_d(:,initial_N); %use the initial N step
         cl_struct.nu_old = mp.z(1:5,counter);
         current_pos = mp.q(3,1,counter);
-        d_pos = abs(mp.pos(i+1) - current_pos);
+        current_vel = mp.z(3,counter);
+        if current_pos < mp.pos(1)
+            q_d
+            z_d
+        end
+        d_pos = mp.pos(i+1) - current_pos;
+        d_vel = mp.vel - current_vel;
         mp.d_pos(counter) = d_pos;
+        
+        d_th1 = cl_struct.w(1,1) - mp.q(1,1,counter)
+        d_th2 = cl_struct.w(2,1) - mp.q(2,1,counter)
+        d_w1 = cl_struct.w(1,1) - mp.z(1,counter)
+        d_w2 = cl_struct.w(2,1) - mp.z(2,counter)
+        %{
+        if mp.pos(i+1) > current_pos
+            cl_struct.direction = 1;
+        else
+            cl_struct.direction = 0;
+        end
+        %}
         %planner
         %select proper time interval
         %time scaling - currently constant
         
-        %{
+        %{\
         if i == 1
             time_scale = (d_pos/abs(mp.pos(i+1) - mp.q(3,1,1)))*mp.timescale;
         else
@@ -116,42 +139,73 @@ for i = 1:length(mp.pos)-1
         if time_scale <= 3*mp.dt
             time_scale = 3*mp.dt;
         else
-        cl_struct.time(:) = time_scale;
+            cl_struct.time(:) = time_scale;
         end
+        cl_struct.time
         %}
-        cl_struct.time(:) = .1;
+        %cl_struct.time(:) = mp.timescale;
         %compute LP for each instance
         %torques_1 = zeros(1,round(time/mp.dt)+1,N);
         %torques_2 = zeros(1,round(time/mp.dt)+1,N);
         d_pos
-        if d_pos < 0.01
-            cl_struct.pos = [current_pos mp.pos(1)];
+        %{\
+        if d_pos < 5*mp.error
+            %cl_struct.pos = [current_pos mp.pos(1)];
+            cl_struct.direction = 0;
         else
-        cl_struct.pos = [current_pos mp.pos(i+1)]; %current state to goal state
+            cl_struct.pos = [current_pos mp.pos(i+1)]; %current state to goal state
+            cl_struct.direction = 1;
         end
-        cl_struct.pos 
-        
+        %}
+        %cl_struct.pos = [current_pos mp.pos(i+1)]; %current state to goal state
+        cl_struct.pos
         cl_struct.vel = mp.z(3,counter);
+        if counter == 1
+            cl_struct.acc = 0;
+        else
+            cl_struct.acc = (mp.z(3,counter) - mp.z(3,counter-1))/mp.dt ;
+        end
+        cl_struct.vel
+        cl_struct.acc
         %planner
         cl_struct = sliding_fun(cl_struct);
         %sum torques
-        current_pos
-        mp.pos(i+1)
         %cl_struct.lp
-        %cl_struct.lp(8,:);
-        %cl_struct.lp(9,:);
-        T1 = (sum(cl_struct.lp(8,:)))/cl_struct.lp_steps;
-        T2 = (sum(cl_struct.lp(9,:)))/cl_struct.lp_steps;
+        %cl_struct.lp(8,:)
+        %cl_struct.lp(9,:)
+        %T1 = -(sum(cl_struct.lp(8,1:cl_struct.lp_steps)))/cl_struct.lp_steps
+        %T2 = -(sum(cl_struct.lp(9,1:cl_struct.lp_steps)))/cl_struct.lp_steps
+        if cl_struct.direction == 1
+            T1 = -cl_struct.lp(8,1);
+            T2 = -cl_struct.lp(9,1);
+        else
+            T1 = cl_struct.lp(8,1);
+            T2 = cl_struct.lp(9,1);
+        end
+        
+        
+        %T1 = mp.lp(8,counter);
+        %T2 = mp.lp(9,counter);
+        
+        %integral_term1  = integral_term1*mp.dt + d_th1
+        %integral_term2  = integral_term2*mp.dt + d_th2
+        %T1 = -(mp.lambda1*T1 + mp.Kp_th1*d_th1 + mp.Ki_th1*integral_term1 + mp.Kd_th1*d_w1)
+        %T2 = -(mp.lambda2*T2 + mp.Kp_th2*d_th2 + mp.Ki_th2*integral_term2 + mp.Kd_th2*d_w2)
         %update structure with new torque values
+        cl_struct.direction
+        T1
+        T2
         mp.cl_torques(:,:,counter)= [T1 ; T2];
+        cl_struct.T1 = T1;
+        cl_struct.T2 = T2;
         %{\
         %visualization
         [joint_pos , cg_pos]=DK_2R(mp.links,[mp.q(1,1,counter) mp.q(2,1,counter)]);
         lp_sol = cell2mat(cl_struct.x);
-        F23x_s = mp.z(6,counter)/mp.dt;
-        F23y_s = mp.z(22,counter)/mp.dt;
-        F34x_s = mp.z(7,counter)/mp.dt;
-        F34y_s = mp.z(23,counter)/mp.dt;
+        F23x_s = mp.z(6,counter)/mp.dt
+        F23y_s = mp.z(22,counter)/mp.dt
+        F34x_s = mp.z(7,counter)/mp.dt
+        F34y_s = mp.z(23,counter)/mp.dt
         x_j = joint_pos(1,:);
         y_j = joint_pos(2,:);
         x_cg = cg_pos(1,:);
@@ -165,7 +219,7 @@ for i = 1:length(mp.pos)-1
             a_x = [0;0];
             a_y = [0;0];
             ao_x = 0;
-        	ao_y = 0;
+            ao_y = 0;
         else
             [~ , cg_pos_old]=DK_2R(mp.links,[mp.q(1,1,counter-1) mp.q(2,1,counter-1)]);
             x_cg_old = cg_pos_old(1,:);
@@ -187,7 +241,7 @@ for i = 1:length(mp.pos)-1
         obj.YData=[cl_struct.ybox(1,1),cl_struct.ybox(2,1),cl_struct.ybox(3,1),cl_struct.ybox(4,1),cl_struct.ybox(1,1)];
         obj_cg.XData = po_cg(1);
         obj_cg.YData = po_cg(2);
-        desired_pos.XData = mp.pos(i+1); 
+        desired_pos.XData = mp.pos(i+1);
         desired_pos.YData = mp.dim(1)/2;
         f1.XData = 0;
         f1.YData = 0;
@@ -207,7 +261,7 @@ for i = 1:length(mp.pos)-1
         f4.VData = -scaling*F23y_s; %F_32y = -F_23y
         f15.XData = po_cg(1);
         f15.YData = 0;
-        f15.UData = scaling*F34x_s; %F_34x 
+        f15.UData = scaling*F34x_s; %F_34x
         f15.VData = scaling*F34y_s;  %F_34y = F_23y + F_g
         
         f5.XData = x_cg(1);
@@ -284,8 +338,8 @@ for i = 1:length(mp.pos)-1
         frame = getframe(h);
         im = frame2im(frame);
         [imind,cm] = rgb2ind(im,256);
-        if i == 1
-            imwrite(imind,cm,mp.filename1,'gif','Loopcount',inf);
+        if counter == 1
+            imwrite(imind,cm,mp.filename1,'gif','Loopcount',Inf);
         else
             imwrite(imind,cm,mp.filename1,'gif','WriteMode','append','DelayTime',1/mp.gif_fps);
         end
@@ -293,6 +347,8 @@ for i = 1:length(mp.pos)-1
         %iteration limit
         if itr >=  500
             warning('Maximum Number of Iterations Reached');
+            total_time = total_time + mp.dt;
+            mp.total_time = total_time;
             return;
         else
             itr = itr + 1;

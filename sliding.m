@@ -13,17 +13,19 @@ mp.I_rod = @(m,l) (m*l^2)/12;
 mp.I = [mp.I_rod(mp.mass(1),mp.links(1)) mp.I_rod(mp.mass(2),mp.links(2))]; %moment of inertias kg m^2
 %object dimensions
 mp.dim = [.03 .05]; %m [height length]
-mp.dt = .01;
+hz = .1*10^3;
+mp.dt = 1/hz;
 mp.mu = [.1 .9]; %friction coefficents [object/floor , finger/object]
 %gravity parameters
-mp.tilt_angle = pi/3;
+mp.tilt_angle = 0;
 mp.g_acc = 9.80665;
 mp.g_dir = 3*pi/2 - mp.tilt_angle;
 mp.g_force = [mp.g_acc*cos(mp.g_dir) mp.g_acc*sin(mp.g_dir)]; %Fg_x Fg_y
 %motion primitive
-mp.time = [.5 .5 .5]; %s time for each step
-mp.pos = [.05 .08 .05 .08]; %m x coordinate [inital, ..., final] Position BCs
+mp.time = [.5]; %s time for each step
+mp.pos = [.05 .04]; %m x coordinate [inital, ..., final] Position BCs
 mp.vel = 0; %velocity initial BC
+mp.acc = 0; %acceleration initial BC
 mp.p_con = [0 ; mp.dim(1)]; %contact point x y wrt object
 %generate sliding motion plan
 mp.ver='s';
@@ -39,9 +41,7 @@ mp.lp = cell2mat(mp.x);
 mp.filename ='sliding.gif';
 mp.filename1='sliding-sim.gif';
 mp.gif_fps=10;
-%sliding_plot(mp);
-mp.unit = 1;
-mp.timescale = .5;
+sliding_plot(mp);
 %hand_s;
 %% simulation validation
 % z - variables contains the state of the system and lagrange variables
@@ -68,6 +68,17 @@ comp_plot_aRB(mp,q,N)
 % z - variables contains the state of the system and lagrange variables
 % q - configuration of the system
 close all
+mp.unit = 1;
+mp.timescale = .1;
+
+mp.Kp_th1 = 0;
+mp.Ki_th1 = 0;
+mp.Kd_th1 = 0;
+mp.lambda1 =.001;
+mp.Kp_th2 = 0;
+mp.Ki_th2 = 0;
+mp.Kd_th2 = 0;
+mp.lambda2=.001;
 mp = simulationloopsliding(mp);
 simulationloopplot(mp)
 

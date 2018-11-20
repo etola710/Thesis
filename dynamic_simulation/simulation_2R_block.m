@@ -68,25 +68,32 @@ global tau_1 tau_2 p_x p_y p_z ;
 lp_sol = mp.lp*unit;
 switch mp.ver
     case 's'
-        F_14x = lp_sol(1,:);
-        F_14y = lp_sol(2,:);
-        F_12x = lp_sol(3,:);
-        F_12y = lp_sol(4,:);
-        F_23x = -lp_sol(5,:);
-        F_23y = -lp_sol(6,:);
+        %{\
+        F_23x = lp_sol(5,:);
+        F_23y = lp_sol(6,:);
         F_34y = lp_sol(7,:);
         F_34x = mp.mu(1)*((-sign(mp.obj_apprx(1,1:initial_N))).*abs(F_34y(:)'));
+        %}
+        %{
+        if mp.direction == 0
+            F_23x = -lp_sol(5,:);
+            F_23y = -lp_sol(6,:);
+            F_34y = -lp_sol(7,:);
+            F_34x = -mp.mu(1)*((-sign(mp.obj_apprx(1,1:initial_N))).*abs(F_34y(:)'));
+        else
+            F_23x = lp_sol(5,:);
+            F_23y = lp_sol(6,:);
+            F_34y = lp_sol(7,:);
+            F_34x = mp.mu(1)*((-sign(mp.obj_apprx(1,1:initial_N))).*abs(F_34y(:)'));
+        end
+        %}
         T1 = lp_sol(8,:);
         T2 = lp_sol(9,:);
         a_x = q_x;
         a_y = H;
     case 't'
-        F_14x = lp_sol(1,:);
-        F_14y = lp_sol(2,:);
-        F_12x = lp_sol(3,:);
-        F_12y = lp_sol(4,:);
-        F_23x = -lp_sol(5,:);
-        F_23y = -lp_sol(6,:);
+        F_23x = lp_sol(5,:);
+        F_23y = lp_sol(6,:);
         F_34x = lp_sol(7,:);
         F_34y = lp_sol(8,:);
         T1 = lp_sol(9,:);
@@ -97,9 +104,11 @@ switch mp.ver
         error('ver failed')
 end
 % 2R manipulator
-tau_1 = T1(initial_N); % joint 1 (N.s)
-tau_2 = T2(initial_N); % joint 2 (N.s)
+%tau_1 = (sum(mp.lp(8,1:mp.lp_steps)))/mp.lp_steps; % joint 1 (N.s)
+%tau_2 = (sum(mp.lp(9,1:mp.lp_steps)))/mp.lp_steps; % joint 2 (N.s)
 
+tau_1 = mp.T1;
+tau_2 = mp.T2;
 % box
 p_x = 0; % applied impulse along x axis
 p_y = 0; % applied impulse along y axis
@@ -137,13 +146,17 @@ mp.theta(2,1) = theta2 +nu_old(2)*h;
 
 % Z - initial guess
 
-V = [mp.w(1,initial_N+1);mp.w(2,initial_N+1);mp.svaj_curve(2,initial_N+1)*unit;0;0];
-P_nc = [F_23x(initial_N+1);F_34x(initial_N+1)];
+%V = [mp.w(1,initial_N+1);mp.w(2,initial_N+1);mp.obj_apprx(1,initial_N+1)*unit;0;0];
+V = [0; 0; 0; 0; 0];
+%P_nc = [F_23x(initial_N+1);F_34x(initial_N+1)];
+P_nc = [0 ; 0];
 
 Ca = [0;0;0;0;0;0];
 SIG = [0;0];
 La = [0;0;0;0;1;0];
-P_c = [F_23y(initial_N+1);m*g*h+F_23y(initial_N+1)];
+%P_c = [F_23y(initial_N+1);m*g*h+F_23y(initial_N+1)];
+%P_c = [F_23y(initial_N+1);F_34y(initial_N+1)];
+P_c =[0 ; 0];
 Z = [V;P_nc;Ca;SIG;La;P_c];
 
 % z - unknown variables at each time step
@@ -198,9 +211,11 @@ for i=initial_N:N
     q(:,i) = q_old;
     
     
-    tau_1 = T1(i); % joint 1 (N.s)
-    tau_2 = T2(i); % joint 2 (N.s)
+    %tau_1 = (sum(mp.lp(8,1:mp.lp_steps)))/mp.lp_steps; % joint 1 (N.s)
+    %tau_2 = (sum(mp.lp(9,1:mp.lp_steps)))/mp.lp_steps; % joint 2 (N.s)
     
+    %tau_1 = T1(initial_N+1);
+    %tau_2 = T2(initial_N+1);
     %mp.finger_theta
     mp.theta(1,i+1) = mp.theta(1,i) +h*mp.w(1,i+1);
     mp.theta(2,i+1) = mp.theta(2,i) +h*mp.w(2,i+1);

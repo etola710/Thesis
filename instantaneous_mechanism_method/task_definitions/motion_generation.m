@@ -13,7 +13,7 @@ for i = 1:length(mp.pos)-1
     else
         t{i} = [(total_time+mp.dt) , (total_time+mp.time(i))];
     end
-    bc{i} = [mp.pos(i) mp.pos(i+1); mp.vel 0; 0 0]; %bc [s;v;a] 
+    bc{i} = [mp.pos(i) mp.pos(i+1); mp.vel 0; mp.acc 0]; %bc [s;v;a] 
     total_time = total_time+mp.time(i);
 end
 %svaj generation

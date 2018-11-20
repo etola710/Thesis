@@ -82,7 +82,7 @@ F_34x_s = [0 mp.z(7,:)/mp.dt]; %pBG_t
 
 sim_T = 0:mp.dt:mp.total_time;
 mp_T = mp.tp;
-error(1:length(mp.z)+1) = mp.error;
+error(1:size(mp.z,2)+1) = mp.error;
 figure
 subplot(2,1,1)
 plot(mp_T,T1,sim_T,T1_cl);
