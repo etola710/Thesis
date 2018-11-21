@@ -106,25 +106,26 @@ grid on
 %}
 
 figure
-subplot(4,1,1)
+subplot(2,1,1)
 plot(mp.tp,mp.v_links(1,:),mp.tp,mp.v_links(3,:))
 xlabel('Time s')
 ylabel('v_1 m/s')
 legend('v_{x1}', 'v_{y1}')
 grid on
-subplot(4,1,2)
+subplot(2,1,2)
 plot(mp.tp,mp.v_links(2,:),mp.tp,mp.v_links(4,:))
 xlabel('Time s')
 ylabel('v_2 m/s')
 legend('v_{x2}', 'v_{y2}')
 grid on
-subplot(4,1,3)
+figure
+subplot(2,1,1)
 plot(mp.tp,mp.a_links(1,:),mp.tp,mp.a_links(3,:))
 xlabel('Time s')
 ylabel('a_1 m/s^2')
 legend('a_{x1}', 'a_{y1}')
 grid on
-subplot(4,1,4)
+subplot(2,1,2)
 plot(mp.tp,mp.a_links(2,:),mp.tp,mp.a_links(4,:))
 xlabel('Time s')
 ylabel('a_2 m/s^2')

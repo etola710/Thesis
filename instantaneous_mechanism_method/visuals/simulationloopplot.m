@@ -118,26 +118,26 @@ legend('\delta q','Error_{criteria}')
 grid on
 %{\
 figure
-subplot(4,1,1)
+subplot(2,1,1)
 plot(mp_T,v_x,sim_T,v_x_s)
 xlabel('Time s')
 ylabel('Velocity m/s')
 legend('v_x','v_{x_s}')
 grid on
-
-subplot(4,1,2)
+subplot(2,1,2)
 plot(mp_T,v_y,sim_T,v_y_s)
 xlabel('Time s')
 ylabel('Velocity m/s')
 legend('v_y','v_{ys}')
 grid on
-subplot(4,1,3)
+figure
+subplot(2,1,1)
 plot(mp_T,a_x,sim_T,a_x_s)
 xlabel('Time s')
 ylabel('Acceleration m/s^2')
 legend('a_x','a_{xs}')
 grid on
-subplot(4,1,4)
+subplot(2,1,2)
 plot(mp_T,a_y,sim_T,a_y_s)
 xlabel('Time s')
 ylabel('Acceleration m/s^2')

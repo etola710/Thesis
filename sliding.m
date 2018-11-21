@@ -23,7 +23,7 @@ mp.g_dir = 3*pi/2 - mp.tilt_angle;
 mp.g_force = [mp.g_acc*cos(mp.g_dir) mp.g_acc*sin(mp.g_dir)]; %Fg_x Fg_y
 %motion primitive
 mp.time = [.5]; %s time for each step
-mp.pos = [.05 .04]; %m x coordinate [inital, ..., final] Position BCs
+mp.pos = [.08 .05]; %m x coordinate [inital, ..., final] Position BCs
 mp.vel = 0; %velocity initial BC
 mp.acc = 0; %acceleration initial BC
 mp.p_con = [0 ; mp.dim(1)]; %contact point x y wrt object
@@ -41,7 +41,7 @@ mp.lp = cell2mat(mp.x);
 mp.filename ='sliding.gif';
 mp.filename1='sliding-sim.gif';
 mp.gif_fps=10;
-sliding_plot(mp);
+%sliding_plot(mp);
 %hand_s;
 %% simulation validation
 % z - variables contains the state of the system and lagrange variables

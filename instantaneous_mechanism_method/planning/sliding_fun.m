@@ -22,6 +22,7 @@ plot(strct_out.svaj_curve(3,:))
 subplot(2,1,2)
 plot(strct_out.svaj_curve(4,:))
 strct_out.lp
+strct_out.svaj_curve(1,1)
 close(fig1,fig2)
 %}
 %svaj_plot(strct_out);

@@ -87,7 +87,7 @@ N = 1; %number of steps
 cl_struct = mp; %initialize structure
 cl_struct.lp_steps = 2;
 total_time = 0;
-mp.error = .001;
+mp.error = .0015;
 counter = 1;
 cl_struct.nu_old = zeros(5,1);
 cl_struct.direction = 1;
@@ -100,7 +100,7 @@ for i = 1:length(mp.pos)-1
     d_pos = 1000; %arbitrary
     while abs(d_pos) >=  mp.error
         %simulation
-        [z_d,q_d,~] = simulation_2R_block(cl_struct,initial_N,N);
+        [z_d,q_d,~] = simulation_2R_block(cl_struct,initial_N,N)
         %update current position
         mp.q(:,:,counter) = q_d(:,initial_N); %use the initial N step
         mp.z(:,counter) = z_d(:,initial_N); %use the initial N step
@@ -149,8 +149,8 @@ for i = 1:length(mp.pos)-1
         %torques_2 = zeros(1,round(time/mp.dt)+1,N);
         d_pos
         %{\
-        if d_pos < 5*mp.error
-            %cl_struct.pos = [current_pos mp.pos(1)];
+        if d_pos < 10*mp.error
+            cl_struct.pos = [current_pos mp.pos(i)];
             cl_struct.direction = 0;
         else
             cl_struct.pos = [current_pos mp.pos(i+1)]; %current state to goal state
@@ -176,11 +176,15 @@ for i = 1:length(mp.pos)-1
         %T1 = -(sum(cl_struct.lp(8,1:cl_struct.lp_steps)))/cl_struct.lp_steps
         %T2 = -(sum(cl_struct.lp(9,1:cl_struct.lp_steps)))/cl_struct.lp_steps
         if cl_struct.direction == 1
-            T1 = -cl_struct.lp(8,1);
-            T2 = -cl_struct.lp(9,1);
+            T1 = cl_struct.lp(8,1);
+            T2 = cl_struct.lp(9,1);
+            %T1 = 0.27;
+            %T2 = 0.027;
         else
             T1 = cl_struct.lp(8,1);
             T2 = cl_struct.lp(9,1);
+            %T1 = 0.27;
+            %T2 = 0.027;
         end
         
         

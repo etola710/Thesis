@@ -66,9 +66,10 @@ global tau_1 tau_2 p_x p_y p_z ;
 
 
 lp_sol = mp.lp*unit;
+%{\
 switch mp.ver
     case 's'
-        %{\
+        %{
         F_23x = lp_sol(5,:);
         F_23y = lp_sol(6,:);
         F_34y = lp_sol(7,:);
@@ -86,29 +87,35 @@ switch mp.ver
             F_34y = lp_sol(7,:);
             F_34x = mp.mu(1)*((-sign(mp.obj_apprx(1,1:initial_N))).*abs(F_34y(:)'));
         end
-        %}
+        
         T1 = lp_sol(8,:);
         T2 = lp_sol(9,:);
+        %}
         a_x = q_x;
         a_y = H;
     case 't'
+        %{
         F_23x = lp_sol(5,:);
         F_23y = lp_sol(6,:);
         F_34x = lp_sol(7,:);
         F_34y = lp_sol(8,:);
         T1 = lp_sol(9,:);
         T2 = lp_sol(10,:);
+        %}
         a_x = q_x-(L/2);
         a_y = H;
     otherwise
         error('ver failed')
 end
+%}
 % 2R manipulator
 %tau_1 = (sum(mp.lp(8,1:mp.lp_steps)))/mp.lp_steps; % joint 1 (N.s)
 %tau_2 = (sum(mp.lp(9,1:mp.lp_steps)))/mp.lp_steps; % joint 2 (N.s)
 
 tau_1 = mp.T1;
 tau_2 = mp.T2;
+%tau_1 = .27;
+%tau_2 = .027;
 % box
 p_x = 0; % applied impulse along x axis
 p_y = 0; % applied impulse along y axis
@@ -205,8 +212,8 @@ for i=initial_N:N
     toc
     
     
-    q_old = q_old + h*z(1:5,i);
-    nu_old = z(1:5,i);
+    q_old = q_old + h*z(1:5,i)
+    nu_old = z(1:5,i)
     
     q(:,i) = q_old;
     
