@@ -91,8 +91,8 @@ mp.error = .0015;
 counter = 1;
 cl_struct.nu_old = zeros(5,1);
 cl_struct.direction = 1;
-cl_struct.T1 = cl_struct.lp(8,1);
-cl_struct.T2 = cl_struct.lp(9,1);
+cl_struct.T1 = cl_struct.lp_kin(8,1);
+cl_struct.T2 = cl_struct.lp_kin(9,1);
 integral_term1 = 0;
 integral_term2 = 0;
 for i = 1:length(mp.pos)-1
@@ -147,9 +147,9 @@ for i = 1:length(mp.pos)-1
         %compute LP for each instance
         %torques_1 = zeros(1,round(time/mp.dt)+1,N);
         %torques_2 = zeros(1,round(time/mp.dt)+1,N);
-        d_pos
-        %{\
-        if d_pos < 10*mp.error
+        %d_pos
+        %{
+        if d_pos < .01
             cl_struct.pos = [current_pos mp.pos(i)];
             cl_struct.direction = 0;
         else
@@ -157,7 +157,14 @@ for i = 1:length(mp.pos)-1
             cl_struct.direction = 1;
         end
         %}
-        %cl_struct.pos = [current_pos mp.pos(i+1)]; %current state to goal state
+        %check direction
+        if current_pos <= mp.pos(i+1)
+            cl_struct.direction = 1;
+        else
+            cl_struct.direction = 0;
+        end
+        %set position
+        cl_struct.pos = [current_pos mp.pos(i+1)]; %current state to goal state
         cl_struct.pos
         cl_struct.vel = mp.z(3,counter);
         if counter == 1
@@ -175,16 +182,33 @@ for i = 1:length(mp.pos)-1
         %cl_struct.lp(9,:)
         %T1 = -(sum(cl_struct.lp(8,1:cl_struct.lp_steps)))/cl_struct.lp_steps
         %T2 = -(sum(cl_struct.lp(9,1:cl_struct.lp_steps)))/cl_struct.lp_steps
+        d_pos
+        change_mode_fwd = .01;
+        change_mode_bkwd = .015;
         if cl_struct.direction == 1
-            T1 = cl_struct.lp(8,1);
-            T2 = cl_struct.lp(9,1);
-            %T1 = 0.27;
-            %T2 = 0.027;
+            %forward
+            %{
+            if abs(d_pos) < change_mode_fwd
+                T1 = cl_struct.lp(8,1);
+                T2 = cl_struct.lp(9,1);
+            else
+                T1 = .5*cl_struct.lp(8,1);
+                T2 = .5*cl_struct.lp(9,1);
+            end
+            %}
+             T1 = .5*cl_struct.lp_kin(8,1);
+             T2 = .5*cl_struct.lp_kin(9,1);
         else
-            T1 = cl_struct.lp(8,1);
-            T2 = cl_struct.lp(9,1);
-            %T1 = 0.27;
-            %T2 = 0.027;
+            %backwards
+            %{
+            if abs(d_pos) < change_mode_bkwd
+                T1 = cl_struct.lp(8,1);
+                T2 = cl_struct.lp(9,1);
+            else
+                T1 = .7*cl_struct.lp(8,1);
+                T2 = -.1*cl_struct.lp(9,1);
+            end
+            %}
         end
         
         

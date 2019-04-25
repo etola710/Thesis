@@ -67,18 +67,29 @@ for i = 1:length(radii_g)
     radii_y(i).LineStyle = '--';
     radii_y(i).MarkerFaceColor='y';
 end
-lp_sol = cell2mat(mp.x);
+%edited mp.x
+lp_sol = cell2mat(mp.x_kin);
 x_j = mp.p_j(1:2,:);
 y_j = mp.p_j(3:4,:);
 x_cg = mp.p_cg(1:2,:);
 y_cg = mp.p_cg(3:4,:);
+%{
 v_x = mp.v_links(1:2,:);
 v_y = mp.v_links(3:4,:);
 a_x = mp.a_links(1:2,:);
 a_y = mp.a_links(3:4,:);
+%}
+%{\
+v_x = mp.vx_kin(1:2,:);
+v_y = mp.vy_kin(1:2,:);
+a_x = mp.ax_kin(1:2,:);
+a_y = mp.ay_kin(1:2,:);
+%}
 po_cg = mp.po_cg;
+%{\
 vo_x = mp.svaj_curve(2,:);
 ao_x = mp.svaj_curve(3,:);
+%}
 
 str = '';
 an=annotation(h,'textbox',[.6 .75 .1 .1],'String',str,'FitBoxToText','on');

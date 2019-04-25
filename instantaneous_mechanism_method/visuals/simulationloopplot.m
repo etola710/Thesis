@@ -40,7 +40,7 @@ for i = 1:length(T1_cl)
     if T1_cl(i) == 0
         c(i) = 0;
     else
-    c(i) = T2_cl(i)/T1_cl(i);
+    c(i) = abs(T2_cl(i))/abs(T1_cl(i));
     end
 end
 q_x = mp.svaj_curve(1,:);
@@ -87,13 +87,13 @@ figure
 subplot(2,1,1)
 plot(mp_T,T1,sim_T,T1_cl);
 xlabel('Time s')
-ylabel('T_1 N')
+ylabel('T_1 Nm')
 legend('T_1','T_{1s}')
 grid on
 subplot(2,1,2)
 plot(mp_T,T2,sim_T,T2_cl)
 xlabel('Time s')
-ylabel('T_2 N')
+ylabel('T_2 Nm')
 legend('T_2','T_{2s}')
 grid on
 
@@ -174,7 +174,7 @@ subplot(3,1,2)
 plot(mp_T,a2,sim_T,a2_s)
 xlabel('Time s')
 ylabel('\alpha_2 rad/s^2')
-legend('\alpha', '\alpha_2s')
+legend('\alpha_2', '\alpha_2s')
 grid on
 subplot(3,1,3)
 plot(sim_T,ao_s)

@@ -85,6 +85,7 @@ obj_cg.Color='g';
 obj_cg.LineWidth=2;
 d=2*mp.dim;
 scaling=1;
+scaling1=10;
 for i=1:length(mp.svaj_curve)
     xgph = [0, x_j(:,i)'];
     ygph = [0,y_j(:,i)'];
@@ -104,12 +105,12 @@ for i=1:length(mp.svaj_curve)
     f2.VData = scaling*lp_sol(4,i); %F_12y
     f3.XData = x_j(2,i);
     f3.YData = y_j(2,i);
-    f3.UData = scaling*lp_sol(5,i); %F_23x
-    f3.VData = scaling*lp_sol(6,i); %F_23y
+    f3.UData = scaling1*lp_sol(5,i); %F_23x
+    f3.VData = scaling1*lp_sol(6,i); %F_23y
     f4.XData = x_j(2,i);
     f4.YData = y_j(2,i);
-    f4.UData = -scaling*lp_sol(5,i); %F_32x = -F_23x
-    f4.VData = -scaling*lp_sol(6,i); %F_32y = -F_23y
+    f4.UData = -scaling1*lp_sol(5,i); %F_32x = -F_23x
+    f4.VData = -scaling1*lp_sol(6,i); %F_32y = -F_23y
     f15.XData = po_cg(1,i);
     f15.YData = 0;
     f15.UData = scaling*sign(vo_x(i))*lp_sol(7,i); %F_34x = - sign(v) mu F_34y
@@ -117,23 +118,23 @@ for i=1:length(mp.svaj_curve)
     
     f5.XData = x_cg(1,i);
     f5.YData = y_cg(1,i);
-    f5.UData = scaling*v_x(1,i); %v_x1
-    f5.VData = scaling*v_y(1,i); %v_y1
+    f5.UData = scaling1*v_x(1,i); %v_x1
+    f5.VData = scaling1*v_y(1,i); %v_y1
     f6.XData = x_cg(1,i);
     f6.YData = y_cg(1,i);
     f6.UData = scaling*a_x(1,i); %a_x1
     f6.VData =scaling*a_y(1,i);  %a_y1
     f7.XData = x_cg(2,i);
     f7.YData = y_cg(2,i);
-    f7.UData = scaling*v_x(2,i); %v_x2
-    f7.VData = scaling*v_y(2,i);  %v_y2
+    f7.UData = scaling1*v_x(2,i); %v_x2
+    f7.VData = scaling1*v_y(2,i);  %v_y2
     f8.XData = x_cg(2,i);
     f8.YData = y_cg(2,i);
     f8.UData = scaling*a_x(2,i); %a_x2
     f8.VData = scaling*a_y(2,i);  %a_y2
     f9.XData = po_cg(1,i);
     f9.YData = po_cg(2,i);
-    f9.UData = scaling*vo_x(i); %v_ox
+    f9.UData = scaling1*vo_x(i); %v_ox
     f9.VData = 0;  %v_oy
     f10.XData = po_cg(1,i);
     f10.YData = po_cg(2,i);

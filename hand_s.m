@@ -3,16 +3,16 @@ alpha = .3;
 dim = [ .05, mp.dim(2), mp.dim(1)]; % l x w x h object dimensions
 %Finger Configurations
 R_f1 = rpy_rot(0,0,-pi);
-p_f1 = [-0.01 .05 0];
+p_f1 = [-0.01 -.05 0];
 g_f1 = tf_matrix(R_f1,p_f1);
 pcp_f1 = [p_f1(1), dim(2)/4, -dim(3)/2]';
 R_f2 = rpy_rot(0,0,pi);
-p_f2 = [.01 .05 0];
+p_f2 = [.01 -.05 0];
 g_f2 = tf_matrix(R_f2,p_f2);
 pcp_f2 = [p_f2(1), dim(2)/4, -dim(3)/2]';
 R_f3 = rpy_rot(0,0,0);
 Rmp_f3 = R_f3*rpy_rot(mp.tilt_angle,0,0);
-p_f3 = [0 -.05 0];
+p_f3 = [0 -.05 0.05];
 g_f3 = tf_matrix(R_f3,p_f3);
 gmp_f3 = tf_matrix(Rmp_f3,p_f3);
 %Object Configuration

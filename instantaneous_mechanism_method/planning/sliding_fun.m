@@ -7,7 +7,7 @@ strct_out = sliding_motion(strct_out);
 strct_out.x=cell(1,length(strct_out.svaj_curve));
 strct_out.fval=1:length(strct_out.svaj_curve);
 strct_out = lp_dynamics_sliding(strct_out);
-strct_out.lp = cell2mat(strct_out.x);
+strct_out.lp = cell2mat(strct_out.x_kin);
 %{
 %visualizations
 fig1 = figure;

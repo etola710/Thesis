@@ -24,11 +24,12 @@ mp.g_force = [mp.g_acc*cos(mp.g_dir) mp.g_acc*sin(mp.g_dir)]; %Fg_x Fg_y
 mp.time = [.5 .5]; %s time for motion
 mp.pos = [.08 .075 .08]; %m x positions
 mp.vel = 0; %velocity initial BC
+mp.acc = 0; %acceleration initial BC
 mp.p_con = [mp.dim*cos(pi/2);mp.dim*sin(pi/2)]; %contact point at top of circle
 %generate rolling motion plan
 mp.ver='r';
 mp=rolling_motion(mp);
-%svaj_plot(mp);
+svaj_plot(mp);
 %lp dynamics
 mp.x=cell(1,length(mp.svaj_curve));
 mp.fval=1:length(mp.svaj_curve);
@@ -36,7 +37,7 @@ mp.lp_steps = length(mp.svaj_curve);
 mp = lp_dynamics_rolling(mp);%linear program solution
 %mp = dynamics_rolling(mp); %direct solution
 mp.lp = cell2mat(mp.x);
-%mp = torque_plot_r(mp); %linear program
+mp = torque_plot_r(mp); %linear program
 %mp = torque_plot_rd(mp); %direct solution
 mp.filename = 'rolling.gif';
 mp.filename1 = 'rolling-sim.gif';
@@ -45,7 +46,7 @@ rolling_plot(mp); %linear program solution
 %rolling_plot_d(mp); %direct solution
 mp.unit = 1;
 mp.timescale = .5;
-hand_r;
+%hand_r;
 %% simulation validation
 % z - variables contains the state of the system and lagrange variables
 % q - configuration of the system

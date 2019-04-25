@@ -22,8 +22,8 @@ mp.g_acc = 9.80665;
 mp.g_dir = 3*pi/2 - mp.tilt_angle;
 mp.g_force = [mp.g_acc*cos(mp.g_dir) mp.g_acc*sin(mp.g_dir)]; %Fg_x Fg_y
 %motion primitive
-mp.time = [.5]; %s time for each step
-mp.pos = [.08 .05]; %m x coordinate [inital, ..., final] Position BCs
+mp.time = [.5 .5 .5]; %s time for each step
+mp.pos = [.05 .08 .05 .08]; %m x coordinate [inital, ..., final] Position BCs
 mp.vel = 0; %velocity initial BC
 mp.acc = 0; %acceleration initial BC
 mp.p_con = [0 ; mp.dim(1)]; %contact point x y wrt object
@@ -37,11 +37,12 @@ mp.fval=1:length(mp.svaj_curve);
 mp.lp_steps = length(mp.svaj_curve);
 mp = lp_dynamics_sliding(mp);
 mp.lp = cell2mat(mp.x);
-%mp = torque_plot_s(mp);
+mp.lp_kin = cell2mat(mp.x_kin);
+mp = torque_plot_s(mp);
 mp.filename ='sliding.gif';
 mp.filename1='sliding-sim.gif';
 mp.gif_fps=10;
-%sliding_plot(mp);
+sliding_plot(mp);
 %hand_s;
 %% simulation validation
 % z - variables contains the state of the system and lagrange variables
@@ -69,7 +70,7 @@ comp_plot_aRB(mp,q,N)
 % q - configuration of the system
 close all
 mp.unit = 1;
-mp.timescale = .1;
+mp.timescale = .5;
 
 mp.Kp_th1 = 0;
 mp.Ki_th1 = 0;

@@ -25,24 +25,26 @@ mp.obj_cg = [.1 , mp.dim(1)/2]; %intial obj cg point wrt W
 mp.tip_pnt = [mp.obj_cg(1)-mp.dim(2)/2 ; 0]; %tipping point wrt W
 mp.time = [.8 .8]; %s time for each step
 mp.pos = [0 pi/4 0]; %radians theta angle of tip [inital, ..., final]
+mp.vel = 0; %velocity initial BC
+mp.acc = 0; %acceleration initial BC
 %generate tipping motion plan
 mp.ver='t';
 mp = tipping_motion(mp);
-%svaj_plot(mp);
+svaj_plot(mp);
 %lp dynamics
 mp.x=cell(1,length(mp.svaj_curve));
 mp.fval=1:length(mp.svaj_curve);
 mp.lp_steps = length(mp.svaj_curve);
 mp = lp_dynamics_tipping(mp);
 mp.lp = cell2mat(mp.x);
-%mp = torque_plot_t(mp);
+mp = torque_plot_t(mp);
 mp.filename ='tipping.gif';
 mp.filename1='tipping-sim.gif';
 mp.gif_fps=10;
 tipping_plot(mp);
 mp.unit = 1;
 mp.timescale = .1;
-hand_t;
+%hand_t;
 %% simulation validation
 % z - variables contains the state of the system and lagrange variables
 % q - configuration of the system
